@@ -1,18 +1,17 @@
 const path = require("path");
 
+const bcrypt = require("bcrypt");
+
+
 const Users = require("../models/signupModel");
 
 exports.getSignUpPage = (req, res) => {
     res.sendFile(path.join(__dirname, "..", "views", "signUp.html"))
 };
 
-exports.userSingIn = async (req, res) => {
+exports.userSingUp = async (req, res) => {
     try{
-        const userDetails = {
-            name: req.body.name,
-            emailId: req.body.emailId,
-            password: req.body.password
-        }
+        const password = req.body.password;
         let allUserEmail = await Users.findAll();
         let bool = false;
         Array.from(allUserEmail).forEach(user=>{
@@ -23,14 +22,19 @@ exports.userSingIn = async (req, res) => {
         if(bool){
             res.status(400).json("User Already Exists!")
         }else{
-            await Users.create({
-                name: req.body.name,
-                emailId: req.body.emailId,
-                password: req.body.password
-            });
-            res.status(200).json({
-                name: req.body.name,
-                emailId: req.body.emailId
+            bcrypt.hash(password,10,async(err, hash)=>{
+                if(err){
+                    res.status(401).json("Something Went Wrong!")
+                }
+                await Users.create({
+                    name: req.body.name,
+                    emailId: req.body.emailId,
+                    password: hash
+                });
+                res.status(200).json({
+                    name: req.body.name,
+                    emailId: req.body.emailId
+                })
             })
         } 
     } catch (err){
