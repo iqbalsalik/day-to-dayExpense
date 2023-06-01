@@ -14,21 +14,16 @@
     <div class="container" style="max-width: 19rem; margin-top: 6rem; border-radius: 15px; background-color:  rgb(143 221 221);">
         <form>
             <div class="form-group">
-                <label for="userName">Name</label>
-                <input type="text" class="form-control" id="userName" aria-describedby="emailHelp" placeholder="Enter Name" name="Name" required>
-              </div>
-            <div class="form-group">
-              <label for="InputEmail">Email address</label>
-              <input type="email" class="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Enter email" name="emailId" required>
+              <label for="logInEmail">Email address</label>
+              <input type="email" class="form-control" id="logInEmail" aria-describedby="emailHelp" placeholder="Enter email" name="logInEmail">
               <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
             <div class="form-group">
-              <label for="InputPassword">Password</label>
-              <input type="password" class="form-control" id="InputPassword" placeholder="Password" name="password" required>
+              <label for="logInPassword">Password</label>
+              <input type="password" class="form-control" id="logInPassword" placeholder="Password" name="password">
             </div>
-            <button type="submit" class="btn btn-primary mb-2" id="submit">Sign Up</button>
+            <button type="submit" class="btn btn-primary mb-2" id="login">LogIn</button>
           </form>
-          <p>Existing User <a id="signInPage" href="/logIn">Sing in</a></p>
     </div>
     
 
@@ -42,7 +37,7 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <script src="signUp.js"></script>
+        <script src="login.js"></script>
 </body>
 
 </html>
