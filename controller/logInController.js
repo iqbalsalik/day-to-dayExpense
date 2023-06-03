@@ -13,20 +13,21 @@ exports.postLogInUser = async (req, res) => {
         let emailId = req.body.emailId;
         let password = req.body.password;
         let allUserEmail = await Users.findAll();
-        const emailCheck = false
+        let emailCheck = false;
         Array.from(allUserEmail).forEach(user => {
             if (user.emailId === emailId) {
+                emailCheck = true;
                 bcrypt.compare(password, user.password, (err, isMatched) => {
                     if (isMatched) {
                         res.status(200).json("User LogIn Successfully!")
                     }else{
-                        res.status(401).json("User not authorized")
+                        res.status(401).json("Wrong Password!")
                     }
                 })
             }
         })
         if(!emailCheck){
-            res.status(404).json("User Not Found!")
+            res.status(404).json("User Not Found!!")
         }
     } catch (err) {
         console.log(err)
