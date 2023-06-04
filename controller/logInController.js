@@ -19,7 +19,7 @@ exports.postLogInUser = async (req, res) => {
                 emailCheck = true;
                 bcrypt.compare(password, user.password, (err, isMatched) => {
                     if (isMatched) {
-                        res.status(200).json("User LogIn Successfully!")
+                        res.status(200).json("succesfully LogedIn")
                     }else{
                         res.status(401).json("Wrong Password!")
                     }

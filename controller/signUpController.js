@@ -31,10 +31,7 @@ exports.userSingUp = async (req, res) => {
                     emailId: req.body.emailId,
                     password: hash
                 });
-                res.status(200).json({
-                    name: req.body.name,
-                    emailId: req.body.emailId
-                })
+                return res.status(200).json("Successfully Singed UP!!")
             })
         } 
     } catch (err){

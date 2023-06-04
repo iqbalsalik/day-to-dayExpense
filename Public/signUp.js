@@ -2,6 +2,7 @@ const submit = document.getElementById("submit");
 const userName = document.getElementById("userName");
 const InputEmail = document.getElementById("InputEmail");
 const InputPassword = document.getElementById("InputPassword");
+const signInPage = document.getElementById("signInPage");
 
 submit.addEventListener("click", async function(e){
     e.preventDefault();
@@ -16,12 +17,13 @@ submit.addEventListener("click", async function(e){
             }
         
              const result = await axios.post("http://localhost:3000/user/signup",userDetails);
-             console.log(result)
              userName.value = '';
              InputEmail.value = '';
              InputPassword.value = '';
+             window.location.href = "/expensePage";
         }
     } catch (err){
         document.write(err.response.data)
     }  
-})
+});
+

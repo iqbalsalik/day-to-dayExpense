@@ -10,7 +10,7 @@ logIn.addEventListener("click",async function(e){
             password:password.value
         }
         const result = await axios.post("http://localhost:3000/logIn",userDetails);
-        document.write(result.data)
+        window.location.href = "/expensePage";
     } catch (err){
         document.write(err.response.data)
     }  
