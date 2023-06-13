@@ -64,7 +64,8 @@ window.addEventListener("DOMContentLoaded", async function(){
     innerMonthYearContainer.innerText = month[date.getMonth()]
     innerYearContainer.innerText = date.getFullYear();
     innerDayContainer.innerText = day[date.getDay()]
-   const result = await axios.get("http://localhost:3000/expensePage/allExpense");
+    const token = localStorage.getItem("token");
+   const result = await axios.get("http://localhost:3000/expensePage/allExpense",{headers:{"authorization":token}});
    let totalDebit = 0;
    if(result.data.length){
     plusIncomeDebit.style.display = "none";
@@ -204,11 +205,12 @@ okButton.addEventListener("click", async function(e){
         monthlyHtmlTotalIncomeCredit.innerText = totalMontlyIncomeCredit
         console.log(monthlyIncomeCredit,totalMontlyIncomeCredit,monthlyHtmlTotalIncomeCredit)
         }else{
+            const token = localStorage.getItem("token");
             const result = await axios.post("http://localhost:3000/expense/debitAmount",{
                 category:expName.value,
                 amount:expAmount.value,
                 description:expDescr.value
-            })
+            },{headers:{"authorization":token}})
             let finalAmount = totalAmountNumber-result.data.amount;
             totalAmount.innerText = finalAmount;
             let debitedAmount = Number(amountDebitParaList.innerText);
@@ -252,7 +254,8 @@ function showOnWhiteScreen(expName,expAmount,expId){
 
 async function deleteExpense(expId,expAmount){
     try{
-        await axios.delete(`http://localhost:3000/expense/${expId}`);
+        const token = localStorage.getItem("token")
+        await axios.delete(`http://localhost:3000/expense/${expId}`,{headers:{"authorization":token}});
         let deletedDebitAmount = Number(amountDebitParaList.innerText) - Number(expAmount);
         amountDebitParaList.innerText = deletedDebitAmount;
         totalAmount.innerText = Number(totalAmount.innerText) + Number(expAmount)

@@ -7,7 +7,7 @@ exports.getExpensePage = (req,res)=>{
 }
 
 exports.getAllExpenseData = async(req,res)=>{
-let result = await debitModule.findAll();
+let result = await req.user.getExpense_debits();
 res.status(200).json(result)
 }
 
@@ -15,7 +15,7 @@ res.status(200).json(result)
 exports.addDebitAmount = async (req,res)=>{
     try{
         let {category,amount,description} = req.body;
-       const result = await debitModule.create({
+       const result = await req.user.createExpense_debit({
             category:category,
             amount:amount,
             description:description
