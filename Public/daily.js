@@ -1,3 +1,5 @@
+
+
 let innerDateContainer = document.getElementById("date");
 let innerMonthYearContainer = document.getElementById("month");
 let innerYearContainer = document.getElementById("year");
@@ -25,6 +27,8 @@ const incomeDebitText = document.getElementById("incomeDebitText");
 const incomeDebitAmount = document.getElementById("incomeDebitAmount");
 const plusIncomeCredit = document.getElementById("plusIncomeCredit");
 const plusIncomeDebit = document.getElementById("plusIncomeDebit");
+const rzpBtn = document.getElementById("rzp-button");
+const prem = document.getElementById("prem");
 
 
 const monthlyHtmlTotalIncomeCredit = document.getElementById("monthlyHtmlTotalIncomeCredit");
@@ -66,16 +70,21 @@ window.addEventListener("DOMContentLoaded", async function(){
     innerDayContainer.innerText = day[date.getDay()]
     const token = localStorage.getItem("token");
    const result = await axios.get("http://localhost:3000/expensePage/allExpense",{headers:{"authorization":token}});
+   console.log(result)
+   if(result.data.isPremium ==true){
+    rzpBtn.style.display = "none";
+    prem.style.display = "block"
+   }
    let totalDebit = 0;
-   if(result.data.length){
+   if(result.data.result.length){
     plusIncomeDebit.style.display = "none";
     incomeDebitContainer.style.display = "block";
-    for(let i =0;i<result.data.length;i++){
-        totalDebit= totalDebit+ +result.data[i].amount
+    for(let i =0;i<result.data.result.length;i++){
+        totalDebit= totalDebit+ +result.data.result[i].amount
         if(i%2==0){
-            showOnGreenScreen(result.data[i].category,result.data[i].amount,result.data[i].id)
+            showOnGreenScreen(result.data.result[i].category,result.data.result[i].amount,result.data.result[i].id)
         }else{
-            showOnWhiteScreen(result.data[i].category,result.data[i].amount,result.data[i].id)
+            showOnWhiteScreen(result.data.result[i].category,result.data.result[i].amount,result.data.result[i].id)
         }
         count++;
     }
@@ -211,6 +220,7 @@ okButton.addEventListener("click", async function(e){
                 amount:expAmount.value,
                 description:expDescr.value
             },{headers:{"authorization":token}})
+            console.log(result)
             let finalAmount = totalAmountNumber-result.data.amount;
             totalAmount.innerText = finalAmount;
             let debitedAmount = Number(amountDebitParaList.innerText);
@@ -221,7 +231,7 @@ okButton.addEventListener("click", async function(e){
             if(count%2==0){
                 showOnGreenScreen(expName.value,expAmount.value,result.data.id)
             }else{
-                showOnWhiteScreen(expName.value,expAmount.value.result.data.id);
+                showOnWhiteScreen(expName.value,expAmount.value,result.data.id);
             }
         }
         expAmount.value = '';
@@ -266,3 +276,37 @@ async function deleteExpense(expId,expAmount){
     }
     
 }
+
+
+rzpBtn.addEventListener("click",async function(e){
+    e.preventDefault()
+    const token = localStorage.getItem("token");
+    const result = await axios.get("http://localhost:3000/premiummembership",{headers:{"authorization":token}});
+
+    let option = {
+        "key":result.data.key_id,
+        "order_id":result.data.order.id,
+        "handler":async function(result){
+            await axios.post("http://localhost:3000/updateTransactionStatus",{
+                order_id:option.order_id,
+                payment_id:result.razorpay_payment_id
+            },{
+                headers:{"Authorization":token}
+            });
+            alert("You are a Premium Member Now!")
+            rzpBtn.style.display = "none";
+            prem.style.display = "block"
+        }
+    }
+    const rzp1 = new Razorpay(option);
+    rzp1.open();
+
+    rzp1.on("payment.failed",async function(response){
+        await axios.post("http://localhost:3000/updateFailureTransactionStatus",{
+            order_id:option.order_id
+        },{
+            headers:{"Authorization":token}
+        })
+        alert(response.error.description)
+    })
+})
