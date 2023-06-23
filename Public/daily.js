@@ -29,6 +29,9 @@ const plusIncomeCredit = document.getElementById("plusIncomeCredit");
 const plusIncomeDebit = document.getElementById("plusIncomeDebit");
 const rzpBtn = document.getElementById("rzp-button");
 const prem = document.getElementById("prem");
+const leaderboard = document.getElementById("ldrbrd");
+const leaderboardList = document.getElementById("leaderboardList");
+const tBody = document.getElementById("tBody");
 
 
 const monthlyHtmlTotalIncomeCredit = document.getElementById("monthlyHtmlTotalIncomeCredit");
@@ -70,7 +73,6 @@ window.addEventListener("DOMContentLoaded", async function(){
     innerDayContainer.innerText = day[date.getDay()]
     const token = localStorage.getItem("token");
    const result = await axios.get("http://localhost:3000/expensePage/allExpense",{headers:{"authorization":token}});
-   console.log(result)
    if(result.data.isPremium ==true){
     rzpBtn.style.display = "none";
     prem.style.display = "block"
@@ -309,4 +311,24 @@ rzpBtn.addEventListener("click",async function(e){
         })
         alert(response.error.description)
     })
+})
+
+leaderboard.addEventListener("click",async function(e){
+    e.preventDefault()
+    const token = localStorage.getItem("token");
+    const result = await axios.get("http://localhost:3000/premium/getLeaderboard",{
+        headers:{"Authorization":token}
+    });
+    leaderboardList.style.display = "block";
+    let leaderboardCount = 1
+    for(let i =0;i<result.data.length;i++){
+        tBody.innerHTML+=`
+          <tr>
+            <td>${leaderboardCount}</td>
+            <td>${result.data[i].name}</td>
+            <td>${result.data[i].amount}</td>
+          </tr>`
+          leaderboardCount++
+    }
+    console.log(tBody)
 })

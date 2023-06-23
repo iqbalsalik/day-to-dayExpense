@@ -4,9 +4,15 @@ const bodyParser = require("body-parser");
 
 const router = require("./routes/router");
 const expDebitRouter = require("./routes/expDebitRouter");
+const purchaseRouter = require("./routes/purchase");
+const premiumRouter = require("./routes/premium");
+
 const sequelize = require("./utils/dataBase");
+
+
 const User = require("./models/signupModel");
 const Expense = require("./models/expenseDebit");
+const Order = require("./models/order");
 
 const app = express();
 
@@ -16,9 +22,14 @@ app.use(express.static("public"))
 
 app.use(expDebitRouter);
 app.use(router);
+app.use(purchaseRouter);
+app.use(premiumRouter);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
+
+User.hasMany(Order);
+Order.belongsTo(User);
 
 
 sequelize.sync().then(result=>{
