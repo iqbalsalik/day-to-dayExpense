@@ -222,6 +222,7 @@ okButton.addEventListener("click", async function(e){
                 amount:expAmount.value,
                 description:expDescr.value
             },{headers:{"authorization":token}})
+            console.log(result)
             let finalAmount = totalAmountNumber-result.data.amount;
             totalAmount.innerText = finalAmount;
             let debitedAmount = Number(amountDebitParaList.innerText);
@@ -330,12 +331,16 @@ function showLeaderboard(){
         });
         leaderboardList.style.display = "block";
         let leaderboardCount = 1
+        console.log(result)
         for(let i =0;i<result.data.length;i++){
+            if(result.data[i].totalExpense == null){
+                result.data[i].totalExpense = 0
+            }
             tBody.innerHTML+=`
               <tr>
                 <td>${leaderboardCount}</td>
                 <td>${result.data[i].name}</td>
-                <td>${result.data[i].totalCost}</td>
+                <td>${result.data[i].totalExpense}</td>
               </tr>`
               leaderboardCount++
         }
