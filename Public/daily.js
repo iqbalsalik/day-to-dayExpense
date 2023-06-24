@@ -335,7 +335,7 @@ function showLeaderboard(){
               <tr>
                 <td>${leaderboardCount}</td>
                 <td>${result.data[i].name}</td>
-                <td>${result.data[i].amount}</td>
+                <td>${result.data[i].totalCost}</td>
               </tr>`
               leaderboardCount++
         }
