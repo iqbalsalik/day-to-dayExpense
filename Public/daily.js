@@ -29,7 +29,6 @@ const plusIncomeCredit = document.getElementById("plusIncomeCredit");
 const plusIncomeDebit = document.getElementById("plusIncomeDebit");
 const rzpBtn = document.getElementById("rzp-button");
 const prem = document.getElementById("prem");
-const leaderboard = document.getElementById("ldrbrd");
 const leaderboardList = document.getElementById("leaderboardList");
 const tBody = document.getElementById("tBody");
 
@@ -76,6 +75,7 @@ window.addEventListener("DOMContentLoaded", async function(){
    if(result.data.isPremium ==true){
     rzpBtn.style.display = "none";
     prem.style.display = "block"
+    showLeaderboard()
    }
    let totalDebit = 0;
    if(result.data.result.length){
@@ -222,7 +222,6 @@ okButton.addEventListener("click", async function(e){
                 amount:expAmount.value,
                 description:expDescr.value
             },{headers:{"authorization":token}})
-            console.log(result)
             let finalAmount = totalAmountNumber-result.data.amount;
             totalAmount.innerText = finalAmount;
             let debitedAmount = Number(amountDebitParaList.innerText);
@@ -302,6 +301,7 @@ rzpBtn.addEventListener("click",async function(e){
     }
     const rzp1 = new Razorpay(option);
     rzp1.open();
+    showLeaderboard()
 
     rzp1.on("payment.failed",async function(response){
         await axios.post("http://localhost:3000/updateFailureTransactionStatus",{
@@ -313,22 +313,32 @@ rzpBtn.addEventListener("click",async function(e){
     })
 })
 
-leaderboard.addEventListener("click",async function(e){
-    e.preventDefault()
-    const token = localStorage.getItem("token");
-    const result = await axios.get("http://localhost:3000/premium/getLeaderboard",{
-        headers:{"Authorization":token}
-    });
-    leaderboardList.style.display = "block";
-    let leaderboardCount = 1
-    for(let i =0;i<result.data.length;i++){
-        tBody.innerHTML+=`
-          <tr>
-            <td>${leaderboardCount}</td>
-            <td>${result.data[i].name}</td>
-            <td>${result.data[i].amount}</td>
-          </tr>`
-          leaderboardCount++
+function showLeaderboard(){
+    let inputElement = document.createElement("input");
+    inputElement.type = "button";
+    inputElement.value = "Show Leaderboard"
+    inputElement.innerText = "Show Leaderboard"
+    inputElement.classList.add("btn","btn-outline-warning","my-2","my-sm-0");
+    prem.appendChild(inputElement);
+    rzpBtn.style.display = "none";
+    prem.style.display = "block";
+    inputElement.onclick= async function(e){
+        e.preventDefault()
+        const token = localStorage.getItem("token");
+        const result = await axios.get("http://localhost:3000/premium/getLeaderboard",{
+            headers:{"Authorization":token}
+        });
+        leaderboardList.style.display = "block";
+        let leaderboardCount = 1
+        for(let i =0;i<result.data.length;i++){
+            tBody.innerHTML+=`
+              <tr>
+                <td>${leaderboardCount}</td>
+                <td>${result.data[i].name}</td>
+                <td>${result.data[i].amount}</td>
+              </tr>`
+              leaderboardCount++
+        }
+        inputElement.disabled = true;
     }
-    console.log(tBody)
-})
+}
