@@ -1,6 +1,4 @@
 const User = require("../models/signupModel");
-const Expense = require("../models/expenseDebit");
-const sequelize = require("../utils/dataBase");
 
 // exports.getLeaderboard = async (req, res) => {
 //   const user = await User.findAll({

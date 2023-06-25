@@ -274,7 +274,8 @@ async function deleteExpense(expId,expAmount){
         let childNode = document.getElementById(expId);
         incomeDebitContainer.removeChild(childNode)
     } catch(err){
-        document.write(err.data)
+        console.log(err.response.data)
+        document.write(err.response.data)
     }
     
 }
@@ -333,9 +334,6 @@ function showLeaderboard(){
         let leaderboardCount = 1
         console.log(result)
         for(let i =0;i<result.data.length;i++){
-            if(result.data[i].totalExpense == null){
-                result.data[i].totalExpense = 0
-            }
             tBody.innerHTML+=`
               <tr>
                 <td>${leaderboardCount}</td>
