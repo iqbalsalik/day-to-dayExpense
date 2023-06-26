@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div class="container" style="max-width: 19rem; margin-top: 6rem; border-radius: 15px; background-color:  rgb(143 221 221);">
+    <div class="container" style="max-width: 19rem; margin-top: 6rem; border-radius: 15px; background-color:  rgb(143 221 221);" id="logInForm">
         <form>
             <div class="form-group">
               <label for="logInEmail">Email address</label>
@@ -25,7 +25,19 @@
             <button type="submit" class="btn btn-primary mb-2" id="login">LogIn</button>
           </form>
     </div>
-    <div class="container mt-2" style="max-width: 19rem;"><p>Don't have a account? <a id="signInPage" href="/">SingUP</a><span> here</span></p></div>
+    <div id="signUpHelp" class="container mt-2" style="max-width: 19rem;"><p>Don't have a account? <a id="signInPage" href="/">SingUP</a><span> here</span></p></div>
+    <div id="forgotPasswordHelp" class="container mt-2" style="max-width: 19rem;"><p>Forgot Password? <button id="forgotPasswordButton" style="    background: none; border: none; color: blue;">Click Here</button></p></div>
+
+    <div class="container" style="max-width: 19rem; margin-top: 6rem; border-radius: 15px; background-color:  rgb(143 221 221); display: none;" id="forgotPassword">
+        <form>
+            <div class="form-group">
+              <label for="forgotPasswordEmail">Email address</label>
+              <input type="email" class="form-control" id="forgotPasswordEmail" aria-describedby="forgotPasswordEmailHelp" placeholder="Enter email" name="forgotPasswordEmail">
+              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <button type="submit" class="btn btn-primary mb-2" id="forgotPasswordSubmit">Submit</button>
+          </form>
+    </div>
     
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
