@@ -14,9 +14,11 @@ router.post("/user/signup",signUpController.userSingUp);
 
 router.post("/password/forgotpassword",logInController.forgotPassword)
 
-router.post("/password/verifyPassword",logInController.verifyCode);
+// router.post("/password/verifyPassword",logInController.verifyCode);
 
-router.post("/password/updatePassword",logInController.updatePassword)
+router.post("/password/updatepassword/:resetpasswordid",logInController.updatePassword)
+
+router.get("/password/resetpassword/:id",logInController.verifyCode)
 
 router.get("/", signUpController.getSignUpPage);
 
