@@ -24,28 +24,24 @@
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item margin" style="margin-left: 8em;">
-                    <a class="nav-link" href="./to-do.html"><i class="bi bi-pencil" style="font-size: 1.5em;"></i></a>
+                    <a class="nav-link" href="/toDoPage"><i class="bi bi-pencil" style="font-size: 1.5em;"></i></a>
                 </li>
                 <li class="nav-item active margin" style="margin-left: 8em;">
-                    <a class="nav-link" href="daily.html">DAILY <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/dailyPage">DAILY <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item margin" style="margin-left: 8em;">
-                    <a class="nav-link" href="./monthly.html">MONTHLY</a>
+                    <a class="nav-link" href="/monthlyPage">MONTHLY</a>
                 </li>
                 <li class="nav-item margin" style="margin-left: 8em;">
-                    <a class="nav-link" href="./yearly.html">YEARLY</a>
+                    <a class="nav-link" href="/yearlyPage">YEARLY</a>
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
                 <button class="btn btn-outline-warning my-2 my-sm-0" id="rzp-button" type="submit">Buy Premium
                     Membership.</button>
-                <div id="prem" style="
-                color: #ffc107;
-                font-size: smaller;
-                text-align: center;
-                display: none;">
+                <div id="prem" style="color: #ffc107; font-size: smaller; text-align: center; display: none;">
                     <div>You are a Premium User Now!!</div>
-                    <button class="btn btn-outline-warning my-2 my-sm-0" id="ldrbrd" type="submit">Show Leaderboard</button>
+                    <!-- <button class="btn btn-outline-warning my-2 my-sm-0" id="ldrbrd" type="submit">Show Leaderboard</button> -->
                     <!-- <input class="form-control mr-sm-2" type="search" placeholder="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
                 </div>
@@ -62,21 +58,21 @@
                 <!-- date container -->
                 <div class="mt-1 mb-1" id="date"
                     style="border: 1px solid white; border-radius: 2px; font-size: larger; font-weight: bold; color: white;">
-                    11</div>
+                    </div>
                 <!-- month container -->
                 <div id="month" class="ml-2"
-                    style="max-width: 5em; word-wrap: normal; color: white; font-weight: bolder;">may,</div>
+                    style="max-width: 5em; word-wrap: normal; color: white; font-weight: bolder;"></div>
                 <!-- year container -->
                 <div id="year" class="ml-2"
-                    style="max-width: 5em; word-wrap: normal; color: white; font-weight: bolder;" 2023></div>
+                    style="max-width: 5em; word-wrap: normal; color: white; font-weight: bolder;"></div>
                 <!-- dayContainer -->
                 <div id="day" class="ml-2"
-                    style="max-width: 5em; word-wrap: normal; color: white; font-weight: bolder;">monday</div>
+                    style="max-width: 5em; word-wrap: normal; color: white; font-weight: bolder;"></div>
             </div>
 
             <div class="col-auto d-flex mr-0">
                 <div id="totalAmount" class="d-inline mr-4" style="color: white;">Balance:
-                    <div>&#8377 <p id="amountPara" style="display: inline;">5.0</p>
+                    <div>&#8377 <p id="amountPara" style="display: inline;">0.0</p>
                     </div>
                 </div>
                 <button style="background-color:rgb(6, 184, 184);border: none; height: 100%; color: white;"
@@ -87,10 +83,7 @@
 
     <!-- ITEM LIST -->
     <div class="container mt-4" style="max-width: 70%; color: rgb(1, 150, 150);">
-        <div class="row mt-1 mb-1">
-            <div class="col-auto mr-auto d-flex" style="font-size: larger; color: black">C/F</div>
-            <div class="col-auto" style="font-size: larger; color: black"> &#8377 30</div>
-        </div>
+       
         <div class="row bg-light">
             <div class="col-auto mr-auto d-flex" style="font-size: larger;">Total Income (Credit)</div>
             <div class="col-auto" style="font-size: larger;">&#8377 <p id="amountCreditParaList"
@@ -155,16 +148,17 @@
 
     <div class="container" style="display: none;" id="leaderboardList">
         <table class="table">
-        <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Amount</th>
-            </tr>
-          </thead>
-          <tbody id="tBody"></tbody>
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Amount</th>
+                </tr>
+            </thead>
+            <tbody id="tBody"></tbody>
         </table>
     </div>
+    
 
 
 

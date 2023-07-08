@@ -1,5 +1,6 @@
 const e = require("express");
 const Razorpay = require("razorpay");
+require("dotenv").config();
 
 const Order = require("../models/order");
 const sequelize = require("../utils/dataBase");
@@ -9,8 +10,8 @@ exports.buyPremium = async (req,res)=>{
 try{
     t = await sequelize.transaction();
         const rzp = new Razorpay({
-        key_id:"rzp_test_2dKaUw2ACG0Csl",
-        key_secret: "CZcs5cOf76DD6c8OqR5MPHPK"
+        key_id:process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET
     })
     const amount = 2300;
     rzp.orders.create({amount,currency:"INR"},async (err,order)=>{

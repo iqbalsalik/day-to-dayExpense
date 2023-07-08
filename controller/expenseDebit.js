@@ -23,11 +23,14 @@ exports.addDebitAmount = async (req, res) => {
     let t;
     try {
         t = await sequelize.transaction();
-        let { category, amount, description } = req.body;
+        let { category, amount, description,createdDate,createdMonth,createdYear } = req.body;
         const result = await req.user.createExpense_debit({
             category: category,
             amount: amount,
-            description: description
+            description: description,
+            createdDate:createdDate,
+            createdMonth:createdMonth,
+            createdYear:createdYear
         }, { transaction: t });
         let totalExpense = req.user.totalExpense;
         await req.user.update({

@@ -1,10 +1,11 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/signupModel");
+require("dotenv").config()
 
 const userAuthentication = async(req,res,next)=>{
     try{
         const token = req.header("authorization");
-        const authUser = jwt.verify(token,"afdsjn2234lkkljasjfdlJKlkjsdf:LKfda232l3kdfsakjhdfanmJKHadsfnKJLHdfJkjsdfhjfa");
+        const authUser = jwt.verify(token,process.env.SECRET_TOKEN_KEY);
         const user = await User.findByPk(authUser.userId);
         req.user= user;
         next()

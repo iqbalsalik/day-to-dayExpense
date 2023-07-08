@@ -20,7 +20,7 @@ submit.addEventListener("click", async function(e){
              userName.value = '';
              InputEmail.value = '';
              InputPassword.value = '';
-             window.location.href = "/expensePage";
+             window.location.href = "/logIn";
         }
     } catch (err){
         document.write(err.response.data)
