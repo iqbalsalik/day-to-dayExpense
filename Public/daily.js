@@ -159,7 +159,6 @@ nextDate.addEventListener("click", function () {
 });
 
 credit.addEventListener("click", function () {
-    console.log("cliked")
     debit.style.backgroundColor = "rgb(206, 202, 202)";
     credit.style.backgroundColor = " rgba(12, 253, 253, 0.308)";
     toAddContainer.style.backgroundColor = "rgba(200, 245, 245, 0.712)";
@@ -171,7 +170,6 @@ credit.addEventListener("click", function () {
 })
 
 debit.addEventListener("click", function () {
-    console.log("debit")
     debit.style.backgroundColor = "rgba(12, 253, 253, 0.308)";
     credit.style.backgroundColor = "rgb(206, 202, 202)";
     toAddContainer.style.backgroundColor = "rgba(160, 243, 243, 0.712)";
@@ -301,7 +299,7 @@ async function addDebitCredit(e){
         addToDo.style.display = "block";
         count++;
     } catch (err) {
-        console.log(err)
+        document.write(err)
     }
 }
 function showOnGreenScreen(expName, expAmount, expId) {
@@ -346,7 +344,6 @@ async function deleteExpense(expId, expAmount) {
             plusIncomeDebit.style.display = "block"
         }
     } catch (err) {
-        console.log(err.response.data)
         document.write(err.response.data)
     }
 }
@@ -364,7 +361,6 @@ async function deleteCredit(expId, expAmount) {
             plusIncomeCredit.style.display = "block"
         }
     } catch (err) {
-        console.log(err.response.data)
         document.write(err.response.data)
     }
 }
@@ -421,7 +417,6 @@ function showLeaderboard() {
         });
         leaderboardList.style.display = "block";
         let leaderboardCount = 1
-        console.log(result)
         for (let i = 0; i < result.data.length; i++) {
             tBody.innerHTML += `
               <tr>

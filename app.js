@@ -18,6 +18,7 @@ const Expense = require("./models/expenseDebit");
 const Order = require("./models/order");
 const ForgotPass = require("./models/forgotPasswordReques");
 const ExpenseCredit = require("./models/expenseCredit");
+const Downloads = require("./models/downloads");
 
 const app = express();
 
@@ -44,6 +45,9 @@ ForgotPass.belongsTo(User);
 
 User.hasMany(ExpenseCredit);
 ExpenseCredit.belongsTo(User)
+
+User.hasMany(Downloads);
+Downloads.belongsTo(User)
 
 
 

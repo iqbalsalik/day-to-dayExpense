@@ -5,6 +5,10 @@ const monthlyTable = document.getElementById("monthlyTableBody");
 const totalCreditedAmount = document.getElementById("monthlyHtmlTotalIncomeCredit");
 const totalDebitedAmount = document.getElementById("monthlyHtmlTotalIncomeDebit");
 const monthlyBalanceLeft = document.getElementById("monthlyHtmlBalanceLeft");
+const btnContainer = document.getElementById("monthlyDownloadBtnContainer");
+const downloadList = document.getElementById("listOfDownloadedFiles");
+const downloadListContainer = document.getElementById("prevRecords")
+const premMonth = document.getElementById("premMonth");
 
 
 const monthMonthlyHtml = {
@@ -70,7 +74,6 @@ async function showAllMonthlyData(){
     monthlyTable.innerHTML = ""
     const token = localStorage.getItem("token");
     const result = await axios.get("http://localhost:3000/expensePage/allMonthlyExpense",{headers:{"authorization":token}});
-    console.log(result)
     let totalCredit = 0;
     let totalDebit = 0;
     let i =0;
@@ -111,10 +114,57 @@ async function showAllMonthlyData(){
     <td style="font-size: larger; font-weight: bolder; color: green;">&#8377 ${totalCredit}</td>
     <td style="font-size: larger; font-weight: bolder; color: red;">&#8377 ${totalDebit}</td>
   </tr>`
-    if(result.data.isPremium ==true){
-     rzpBtn.style.display = "none";
+
+    if(result.data.result.isPremium ==true){
+     premMonth.innerHTML= `<button class="btn  mt-1 "
+     style=" height: 45px; border-radius: 25px; background-color:#ffc107 " onclick ="showPrevDownloads(event)">Show Downloads</button>`;
+     premMonth.style.display = "block"
+     btnContainer.innerHTML = `<div class="col-12">
+     <button class="btn  mt-5 float-right"
+         style="background-color:rgb(1, 150, 150); height: 45px; border-radius: 25px; margin-left: 30em;" onclick ="downloadMonthlyData(event)"> <i class="bi bi-filetype-pdf" style="font-size: 1.3em;"></i>
+     </button>
+ </div>`
     }
     totalCreditedAmount.innerText = totalCredit;
     totalDebitedAmount.innerText = totalDebit;
     monthlyBalanceLeft.innerText = Balance;
+}
+
+
+async function downloadMonthlyData (e){
+    e.preventDefault()
+    try{
+        const token = localStorage.getItem("token");
+        const result =  await axios.get("http://localhost:3000/expensePage/download",{headers:{"authorization":token}});
+        if(result.data.response=="Success"){
+            const a = document.createElement("a");
+            a.href = result.data.fileUrl;
+            // a.download = "myExpense.csv"
+            a.click();
+        }else{
+            throw new Error(result.data.response)
+        }
+    }catch(err){
+        throw new Error(result.data.response)
+    }
+}
+
+async function showPrevDownloads(e){
+    e.preventDefault()
+try{
+    downloadList.innerHTML = "";
+    downloadListContainer.style.display = "block"
+    const token = localStorage.getItem("token");
+    const result = await axios.get("http://localhost:3000/expensePage/showDownloads",{headers:{"authorization":token}});
+    for(let i =0;i<result.data.records.length;i++){
+        downloadList.innerHTML+= `<tr style =  background-color:#c9d970;;">
+        <td scope="row">${i+1}</td>
+        <td>${result.data.records[i].date}</td>
+        <td> <a href="${result.data.records[i].fileUrl}">Download Again</a></td>
+      </tr>`
+    }
+
+}catch(err){
+    document.write(err)
+}
 }

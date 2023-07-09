@@ -37,14 +37,7 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
-                <button class="btn btn-outline-warning my-2 my-sm-0" id="rzp-button" type="submit">Buy Premium
-                    Membership.</button>
-                <div id="prem" style="color: #ffc107; font-size: smaller; text-align: center; display: none;">
-                    <div>You are a Premium User Now!!</div>
-                    <!-- <button class="btn btn-outline-warning my-2 my-sm-0" id="ldrbrd" type="submit">Show Leaderboard</button> -->
-                    <!-- <input class="form-control mr-sm-2" type="search" placeholder="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
-                </div>
+                <div id="premMonth" style="color: #ffc107; font-size: smaller; text-align: center; display: none;"></div>
             </form>
         </div>
     </nav>
@@ -87,9 +80,8 @@
         </div>
     </div>
 
-    <div class="container mt-2"
-        style="min-height: 13rem; position: relative;">
-        <div class="m-auto text-center" style="font-size: larger; font-weight: bolder;">
+    <div class="container mt-2" style="min-height: 13rem; position: relative;">
+        <div class="m-auto text-center" style="font-size: larger; font-weight: bolder;" >
             <span id="date"></span>
             <span id="month"></span>
             <span id="year"></span>
@@ -107,14 +99,21 @@
             <tbody id="monthlyTableBody"></tbody>
           </table>
 
-        <div class="container d-flex">
-            <div class="col-12">
-                <button class="btn  mt-5 float-right"
-                    style="background-color:rgb(1, 150, 150); height: 45px; border-radius: 25px; margin-left: 30em;"><i
-                        class="bi bi-filetype-pdf" style="font-size: 1.3em;"></i>
-                </button>
-            </div>
-        </div>
+        <div class="container d-flex" id="monthlyDownloadBtnContainer"></div>
+    </div>
+
+    <div class="container mt-2" id="prevRecords" style="display: none; max-width: 40rem;">
+        <h3>Downloaded File List</h3>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Date</th>
+                <th scope="col">Download Links</th>
+              </tr>
+            </thead>
+            <tbody id="listOfDownloadedFiles"></tbody>
+          </table>
     </div>
 
 
