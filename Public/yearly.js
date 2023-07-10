@@ -7,6 +7,7 @@ const dataTable = document.getElementById("yearlyDataTable");
 const yearlyBtnContainer = document.getElementById('yearlyDownloadBtnContainer');
 const downloadListYearly = document.getElementById("listOfDownloadedFilesYearly");
 const downloadListContainerYearly = document.getElementById("prevRecordsYearly")
+const prevNextBtnContainerYearly = document.getElementById("prevNextBtnYearly")
 
 const yearlyMonth = {
     0: "January",
@@ -43,38 +44,35 @@ prevBtn.addEventListener("click",function(){
     showyearlyData()
 })
 
-async function showyearlyData (){
+async function showyearlyData (page){
+    page = page || 1
     dataTable.innerHTML = "";
     const token = localStorage.getItem("token");
-    const result = await axios.get("http://localhost:3000/expensePage/allMonthlyExpense",{headers:{"authorization":token}});
-    if(result.data.isPremium ==true){
-     rzpBtnYearly.style.display = "none";
-    }
-    let totalCredit = 0;
-    let totalDebit = 0;
+    const result = await axios.get(`http://localhost:3000/expensePage/allMonthlyExpense?page=${page}`,{headers:{"authorization":token}});
+    // if(result.data.isPremium ==true){
+    //  rzpBtnYearly.style.display = "none";
+    // }
     let i =0;
     let j = 0;
-    while(i<result.data.result.expense_credits.length || j<result.data.result.expense_debits.length){
-        if(result.data.result.expense_credits[i]){
-        if(result.data.result.expense_credits[i].createdYear==yearContainer.innerText){
-                totalCredit+=result.data.result.expense_credits[i].amount
+    while(i<2 || j<2){
+        if(result.data.resultC[i]){
+        if(result.data.resultC[i].createdYear==yearContainer.innerText){
                 dataTable.innerHTML+= ` <tr style =background-color: #e3e1e1;">
-                <th scope="row">${yearlyMonth[result.data.result.expense_credits[i].createdMonth]}</th>
-                <td>${result.data.result.expense_credits[i].category}</td>
-                <td>${result.data.result.expense_credits[i].amount}</td>
+                <th scope="row">${yearlyMonth[result.data.resultC[i].createdMonth]}</th>
+                <td>${result.data.resultC[i].category}</td>
+                <td>${result.data.resultC[i].amount}</td>
                 <td></td>
                 <td></td>
               </tr>`
             }
         }
-        if(result.data.result.expense_debits[i]){
-        if(result.data.result.expense_debits[i].createdYear ==yearContainer.innerText){
-                totalDebit+=result.data.result.expense_debits[i].amount
+        if(result.data.resultD[i]){
+        if(result.data.resultD[i].createdYear ==yearContainer.innerText){
                 dataTable.innerHTML+= ` <tr style = background-color:#d7ffd7;">
-                <th scope="row">${yearlyMonth[result.data.result.expense_debits[i].createdMonth]}</th>
-                <td>${result.data.result.expense_debits[i].category}</td>
+                <th scope="row">${yearlyMonth[result.data.resultD[i].createdMonth]}</th>
+                <td>${result.data.resultD[i].category}</td>
                 <td></td>
-                <td>${result.data.result.expense_debits[i].amount}</td>
+                <td>${result.data.resultD[i].amount}</td>
                 <td></td>
               </tr>`
             }
@@ -82,16 +80,16 @@ async function showyearlyData (){
         i++;
         j++;
     }
-    const Balance = totalCredit-totalDebit;
+    const Balance = result.data.totalCredit-result.data.totalExpense;
     dataTable.innerHTML+= ` <tr style =  background-color:#c9d970;;">
     <th scope="row"></th>
     <td  style="font-size: larger; font-weight: bolder;">Total</td>
-    <td style="font-size: larger; font-weight: bolder; color: green;">&#8377 ${totalCredit}</td>
-    <td id="monthlyTableExpense" style="font-size: larger; font-weight: bolder; color: red;">&#8377 ${totalDebit}</td>
+    <td style="font-size: larger; font-weight: bolder; color: green;">&#8377 ${result.data.totalCredit}</td>
+    <td id="monthlyTableExpense" style="font-size: larger; font-weight: bolder; color: red;">&#8377 ${result.data.totalExpense}</td>
     <td style="font-size: larger; font-weight: bolder;">${Balance}</td>
   </tr>`
 
-    if(result.data.result.isPremium ==true){        
+    if(result.data.isPremium ==true){        
      prem.innerHTML= `<button class="btn  mt-1 "
      style=" height: 45px; border-radius: 25px; background-color:#ffc107 " onclick ="showPrevDownloadsYearly(event)">Show Downloads</button>`;
      prem.style.display = "block"
@@ -99,6 +97,35 @@ async function showyearlyData (){
      <button class="btn  mt-5 float-right" style="background-color:rgb(1, 150, 150); height: 45px; border-radius: 25px; margin-left: 30em;" onclick = "downloadYearlyData(event)"><i class="bi bi-filetype-pdf" style="font-size: 1.3em;"></i>
      </button>
  </div>`
+    }
+
+    if(!result.data.isPrevPage){
+        prevNextBtnContainerYearly.innerHTML = `<div class="row">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+          <div class="content">
+              <button class="btn btn-sm bg-info" onclick =showyearlyData()  style="display: inline;" disabled>prev</button>
+              <button class="btn btn-sm bg-info" onclick =showyearlyData(${result.data.nextPage}) style="display: inline;">next</button>
+          </div>
+        </div>
+      </div>`
+    }else if(!result.data.isNextPage){
+        prevNextBtnContainerYearly.innerHTML = `<div class="row">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+          <div class="content">
+              <button class="btn btn-sm bg-info" onclick =showyearlyData(${result.data.prevPage})  style="display: inline;" >prev</button>
+              <button class="btn btn-sm bg-info" onclick =showyearlyData() style="display: inline;" disabled>next</button>
+          </div>
+        </div>
+      </div>`
+    }else{
+        prevNextBtnContainerYearly.innerHTML = `<div class="row">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+          <div class="content">
+              <button class="btn btn-sm bg-info" onclick =showyearlyData(${result.data.prevPage})  style="display: inline;" >prev</button>
+              <button class="btn btn-sm bg-info" onclick =showyearlyData(${result.data.nextPage}) style="display: inline;">next</button>
+          </div>
+        </div>
+      </div>`
     }
 }
 

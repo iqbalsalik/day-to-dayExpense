@@ -19,6 +19,7 @@ const Order = require("./models/order");
 const ForgotPass = require("./models/forgotPasswordReques");
 const ExpenseCredit = require("./models/expenseCredit");
 const Downloads = require("./models/downloads");
+const Notes = require("./models/notes");
 
 const app = express();
 
@@ -49,6 +50,8 @@ ExpenseCredit.belongsTo(User)
 User.hasMany(Downloads);
 Downloads.belongsTo(User)
 
+User.hasMany(Notes)
+Notes.belongsTo(User)
 
 
 sequelize.sync().then(result=>{

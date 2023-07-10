@@ -3,63 +3,58 @@ const expense = require("../models/expenseDebit");
 const credit = require("../models/expenseCredit");
 const User = require("../models/signupModel");
 const Downloads = require("../models/downloads");
+const Notes = require("../models/notes");
 const AWS = require("aws-sdk");
 require("dotenv").config();
 
+const RecordServices = require("../Services/recordServices");
+
 exports.getMonthlyRecord = async(req,res)=>{
-    let t;
     try{
-        t =await sequelize.transaction();
-        const result = await User.findByPk(req.user.id,{
-            include:[credit,expense]
-        },{transaction:t})
-       await t.commit()
+        const offset = (+req.query.page-1)*2
+        const creditCount = await expense.count({
+            where:{
+                userId:req.user.id
+            }
+        });
+        const expenseCount = await credit.count({
+            where:{
+                userId:req.user.id
+            }
+        })
+        const nOffset = offset*2
+        let totalItem = creditCount+expenseCount;
+        const resultD = await req.user.getExpense_debits({
+            offset:offset,
+            limit:2
+        })
+
+        const resultC = await req.user.getExpense_credits({
+            offset:offset,
+            limit:2
+        })
+        const totalExpense = req.user.totalExpense
+        const totalCredit = req.user.totalCredit
        res.status(200).json({
-        result
+        resultD,
+        resultC,
+        currentPage:req.query.page,
+        nextPage:+req.query.page+1,
+        prevPage:+req.query.page-1,
+        isNextPage:nOffset<totalItem,
+        isPrevPage:offset>0,
+        isPremium:req.user.isPremium,
+        totalExpense:totalExpense,
+        totalCredit:totalCredit
        })
 
     }catch(err){
-       await t.rollback()
         console.log(err)
+        res.status(500).json("Something Went Wrong!")
     }
 }
 
- async function uploadToAws(data,name){
-try{
-    const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
-    const IAM_USER_KEY = process.env.AWS_USER_KEY;
-    const IAM_USER_SECRET = process.env.AWS_USER_SECRET;
-
-    let s2Bucket = new AWS.S3({
-        accessKeyId:IAM_USER_KEY,
-        secretAccessKey:IAM_USER_SECRET,
-        Bucket:BUCKET_NAME
-    })
-
-    var params = {
-        Bucket:BUCKET_NAME,
-        Key:name,
-        Body:data,
-        ACL:"public-read"
-    }
-
-    return new Promise((resolve,reject)=>{
-        s2Bucket.upload(params,(err,response)=>{
-            if(err){
-                reject(err)
-            }else{
-                resolve (response.Location)
-            }
-        })
-    })
-
-    
-
-
-}catch(err){
-    return err
-}
-}
+ 
 const date = new Date()
 
 exports.downloadMonthlyData = async(req,res)=>{
@@ -67,7 +62,7 @@ exports.downloadMonthlyData = async(req,res)=>{
         const userData = await req.user.getExpense_debits();
         const stringyfiedData = JSON.stringify(userData);
         const fileName = `ExpenseData/${req.user.id}/${new Date()}`
-        const fileUrl =await uploadToAws(stringyfiedData,fileName)
+        const fileUrl =await RecordServices.uploadToAws(stringyfiedData,fileName)
         await req.user.createDownload({
             date:`${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`,
             fileUrl:fileUrl
@@ -89,4 +84,41 @@ try{
     console.log(err)
     res.status(500).json("Something Went Wrong!")
 }
+}
+
+exports.addNotes = async (req,res)=>{
+    try{
+        const result = await req.user.createNote({
+            note:req.body.note,
+            date:req.body.date,
+            month:req.body.month,
+            year:req.body.year,
+            day:req.body.day
+        })
+        res.status(200).json(result)
+    }catch(err){
+        console.log(err);
+        res.status(500).json("Something Went Wrong!")
+    }
+}
+
+exports.getAllNotes = async(req,res)=>{
+    try{
+        const result = await req.user.getNotes();
+        res.status(200).json(result)
+    }catch(err){
+        res.status(500).json("Something Went Wrong!")
+    }
+}
+
+exports.deleteNote = async(req,res)=>{
+    try{
+        const id = req.params.id;
+        const note = await Notes.findByPk(id);
+        await note.destroy();
+        res.status(200).json("Successfully Deleted")
+    }catch(err){
+        console.log(err)
+        res.status(500).json("Something Went Wrong!")
+    }
 }

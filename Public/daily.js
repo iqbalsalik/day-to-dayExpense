@@ -209,8 +209,9 @@ async function showAllData(dtNa,moNa,yeNa,daNa){
         }
     }
     if(incomeCreditContainer.innerHTML == ""){
-        incomeCreditContainer.innerHTML = `<div class="mt-1 mb-1 text-center" style="font-size: larger;" id="plusIncomeCredit">Tap on "+" to add new item
+        const childElement = `<div class="mt-1 mb-1 text-center" style="font-size: larger;" id="plusIncomeCredit">Tap on "+" to add new item
         </div>`
+        incomeCreditContainer.removeChild(childElement)
     }
     amountCreditParaList.innerText = totalCredit;
     if (result.data.isPremium == true) {
@@ -235,8 +236,9 @@ async function showAllData(dtNa,moNa,yeNa,daNa){
         }
     }
     if(incomeDebitContainer.innerHTML ==''){
-        incomeDebitContainer.innerHTML = `<div class="mt-1 mb-1 text-center" style="font-size: larger;" id="plusIncomeCredit">Tap on "+" to add new item
+        const childElement  = `<div class="mt-1 mb-1 text-center" style="font-size: larger;" id="plusIncomeDebit">Tap on "+" to add new item
         </div>`
+        incomeDebitContainer.appendChild(childElement)
     }
     amountDebitParaList.innerText = totalDebit;
     totalAmount.innerText = amountCreditParaList.innerText - amountDebitParaList.innerText;

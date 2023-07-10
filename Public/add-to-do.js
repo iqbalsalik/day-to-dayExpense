@@ -48,10 +48,10 @@ window.addEventListener("DOMContentLoaded",async function(){
     innerMonthYearContainer.innerText = month[date.getMonth()]
     innerYearContainer.innerText = date.getFullYear();
     innerDayContainer.innerText = day[date.getDay()]
-    const token = localStorage.getItem("token");
-    const result = await axios.get("http://localhost:3000/expensePage/allExpense",{headers:{"authorization":token}});
-    if(result.data.isPremium ==true){
-     rzpBtn.style.display = "none";
+    const token = localStorage.getItem("token")
+    const result = await axios.get("http://localhost:3000/expensePage/allNotes",{headers:{"authorization":token}});
+        for(let i =0;i<result.data.length;i++){
+        showNotesOnScreen(result.data[i].note,result.data[i].date,result.data[i].month,result.data[i].year,result.data[i].day,result.data[i].id)
     }
 })
 
@@ -136,17 +136,58 @@ nextDate.addEventListener("click", function () {
     innerMonthYearContainer.innerText = month[monthName]
 });
 
-ok.addEventListener("click",function(){
-    let childNode = ` <h5 style="color:  rgb(1, 150, 150);;"><p id="dateTime">${innerDateContainer.innerText}, ${innerMonthYearContainer.innerText} ${innerYearContainer.innerText} . ${innerDayContainer.innerText}</p></h5>
+ok.addEventListener("click",async function(e){
+    try{
+        e.preventDefault();
+        const token = localStorage.getItem("token")
+        const dateC = Number(innerDateContainer.innerText);
+        const monthC = innerMonthYearContainer.innerText;
+        const yearC = Number(innerYearContainer.innerText)
+        const dayC = innerDayContainer.innerText
+        const result = await axios.post("http://localhost:3000/expensePage/addNotes",{
+            note:expdes.value,
+            date:dateC,
+            month:monthC,
+            year:yearC,
+            day:dayC
+        },{headers:{"authorization":token}})
+        console.log(result)
+        showNotesOnScreen(result.data.note,dateC,monthC,yearC,dayC,result.data.id)
+        
+        descContainer.style.display = "block";
+        buttonContainer.style.display = "block";
+        dateContainer.style.display = "none";
+        textAreaContainer.style.display = "none";
+        addButtonContainer.style.display = "none";
+    }catch(err){
+        document.write(err)
+    }  
+})
+
+function showNotesOnScreen(data,date,month,year,day,id){
+    let childNode = `<div id= "${id}"> <h5 style="color:  rgb(1, 150, 150);;"><p id="dateTime">${date}, ${month} ${year} . ${day} 
+    <button class="btn float-right d-inline" style="background-color:rgb(1, 150, 150); " onclick ="deleteData(${id})">Delete</button></p></h5>
     <hr style="margin: 0;">
     <div class="details" style="font-size: larger; margin-top: 0.1em;">
-        <p id="desc">${expdes.value}</p>
-    </div>`
+        <p id="desc">${data} </p>
+    </div> </div>`
     expdes.value ='';
     descContainer.innerHTML+=childNode;
-    descContainer.style.display = "block";
-    buttonContainer.style.display = "block";
-    dateContainer.style.display = "none";
-    textAreaContainer.style.display = "none";
-    addButtonContainer.style.display = "none";
-})
+}
+
+async function deleteData(id){
+    try{
+        const token = localStorage.getItem("token")
+       const result =  await axios.delete(`http://localhost:3000/expensePage/deleteNote/${id}`,{headers:{"authorization":token}})
+       console.log(result);
+       if(result.status == 200){
+        console.log(id)
+        const childElement = document.getElementById(`${id}`);
+        console.log(childElement)
+        descContainer.removeChild(childElement)
+       }
+    }catch(err){
+        console.log(err)
+        document.write(err)
+    }
+}

@@ -9,6 +9,7 @@ const btnContainer = document.getElementById("monthlyDownloadBtnContainer");
 const downloadList = document.getElementById("listOfDownloadedFiles");
 const downloadListContainer = document.getElementById("prevRecords")
 const premMonth = document.getElementById("premMonth");
+const prevNextBtnContainer = document.getElementById("prevNextBtn")
 
 
 const monthMonthlyHtml = {
@@ -29,13 +30,14 @@ const monthMonthlyHtml = {
 const dateMonthlyHtml = new Date();
 
 window.addEventListener("DOMContentLoaded",async function(){
+    let page = 1;
     innerMonthContainer.innerText = monthMonthlyHtml[dateMonthlyHtml.getMonth()]
     innerYearContainerMonthlyHtml.innerText = dateMonthlyHtml.getFullYear();
     document.getElementById("date").innerText = dateMonthlyHtml.getDate();
     document.getElementById("month").innerText = monthMonthlyHtml[dateMonthlyHtml.getMonth()];
     document.getElementById("year").innerText = dateMonthlyHtml.getFullYear()
 
-   showAllMonthlyData();
+   showAllMonthlyData(page);
 })
 
 
@@ -70,52 +72,49 @@ nextDate.addEventListener("click",function(e){
     showAllMonthlyData()
 })
 
-async function showAllMonthlyData(){
+async function showAllMonthlyData(page){
+    page = page||1;
     monthlyTable.innerHTML = ""
     const token = localStorage.getItem("token");
-    const result = await axios.get("http://localhost:3000/expensePage/allMonthlyExpense",{headers:{"authorization":token}});
-    let totalCredit = 0;
-    let totalDebit = 0;
+    const result = await axios.get(`http://localhost:3000/expensePage/allMonthlyExpense?page=${page}`,{headers:{"authorization":token}});
     let i =0;
     let j = 0;
-    while(i<result.data.result.expense_credits.length || j<result.data.result.expense_debits.length){
-        if(result.data.result.expense_credits[i]){
-        if(month[result.data.result.expense_credits[i].createdMonth]==innerMonthContainer.innerText && result.data.result.expense_credits[i].createdYear ==innerYearContainerMonthlyHtml.innerText){
-                totalCredit+=result.data.result.expense_credits[i].amount
+    while(i<2 || j<2){
+        if(result.data.resultC[i]){
+        if(month[result.data.resultC[i].createdMonth]==innerMonthContainer.innerText && result.data.resultC[i].createdYear ==innerYearContainerMonthlyHtml.innerText){
                 monthlyTable.innerHTML+= ` <tr style =background-color: #e3e1e1;">
-                <th scope="row">${result.data.result.expense_credits[i].createdDate}-${monthMonthlyHtml[result.data.result.expense_credits[i].createdMonth]}-${result.data.result.expense_credits[i].createdYear}</th>
-                <td>${result.data.result.expense_credits[i].description}</td>
-                <td>${result.data.result.expense_credits[i].category}</td>
-                <td>${result.data.result.expense_credits[i].amount}</td>
+                <th scope="row">${result.data.resultC[i].createdDate}-${monthMonthlyHtml[result.data.resultC[i].createdMonth]}-${result.data.resultC[i].createdYear}</th>
+                <td>${result.data.resultC[i].description}</td>
+                <td>${result.data.resultC[i].category}</td>
+                <td>${result.data.resultC[i].amount}</td>
                 <td></td>
               </tr>`
             }
         }
-        if(result.data.result.expense_debits[i]){
-        if(month[result.data.result.expense_debits[i].createdMonth]==innerMonthContainer.innerText && result.data.result.expense_debits[i].createdYear ==innerYearContainerMonthlyHtml.innerText){
-                totalDebit+=result.data.result.expense_debits[i].amount
+        if(result.data.resultD[i]){
+        if(month[result.data.resultD[i].createdMonth]==innerMonthContainer.innerText && result.data.resultD[i].createdYear ==innerYearContainerMonthlyHtml.innerText){
                 monthlyTable.innerHTML+= ` <tr style = background-color:#d7ffd7;">
-                <th scope="row">${result.data.result.expense_debits[i].createdDate}-${monthMonthlyHtml[result.data.result.expense_debits[i].createdMonth]}-${result.data.result.expense_debits[i].createdYear}</th>
-                <td>${result.data.result.expense_debits[i].description}</td>
-                <td>${result.data.result.expense_debits[i].category}</td>
+                <th scope="row">${result.data.resultD[i].createdDate}-${monthMonthlyHtml[result.data.resultD[i].createdMonth]}-${result.data.resultD[i].createdYear}</th>
+                <td>${result.data.resultD[i].description}</td>
+                <td>${result.data.resultD[i].category}</td>
                 <td></td>
-                <td>${result.data.result.expense_debits[i].amount}</td>
+                <td>${result.data.resultD[i].amount}</td>
               </tr>`
             }
         }
         i++;
         j++;
     }
-    const Balance = totalCredit-totalDebit;
+    const Balance = result.data.totalCredit-result.data.totalExpense;
     monthlyTable.innerHTML+= ` <tr style =  background-color:#c9d970;;">
     <th scope="row"></th>
     <td style="font-size: larger; font-weight: bolder;">Total</td>
     <td></td>
-    <td style="font-size: larger; font-weight: bolder; color: green;">&#8377 ${totalCredit}</td>
-    <td style="font-size: larger; font-weight: bolder; color: red;">&#8377 ${totalDebit}</td>
+    <td style="font-size: larger; font-weight: bolder; color: green;">&#8377 ${result.data.totalCredit}</td>
+    <td style="font-size: larger; font-weight: bolder; color: red;">&#8377 ${result.data.totalExpense}</td>
   </tr>`
 
-    if(result.data.result.isPremium ==true){
+    if(result.data.isPremium ==true){
      premMonth.innerHTML= `<button class="btn  mt-1 "
      style=" height: 45px; border-radius: 25px; background-color:#ffc107 " onclick ="showPrevDownloads(event)">Show Downloads</button>`;
      premMonth.style.display = "block"
@@ -125,9 +124,38 @@ async function showAllMonthlyData(){
      </button>
  </div>`
     }
-    totalCreditedAmount.innerText = totalCredit;
-    totalDebitedAmount.innerText = totalDebit;
+    totalCreditedAmount.innerText = result.data.totalCredit;
+    totalDebitedAmount.innerText = result.data.totalExpense;
     monthlyBalanceLeft.innerText = Balance;
+    if(!result.data.isPrevPage){
+        prevNextBtnContainer.innerHTML = `<div class="row">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+          <div class="content">
+              <button class="btn btn-sm bg-info" onclick =showAllMonthlyData()  style="display: inline;" disabled>prev</button>
+              <button class="btn btn-sm bg-info" onclick =showAllMonthlyData(${result.data.nextPage}) style="display: inline;">next</button>
+          </div>
+        </div>
+      </div>`
+    }else if(!result.data.isNextPage){
+        prevNextBtnContainer.innerHTML = `<div class="row">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+          <div class="content">
+              <button class="btn btn-sm bg-info" onclick =showAllMonthlyData(${result.data.prevPage})  style="display: inline;" >prev</button>
+              <button class="btn btn-sm bg-info" onclick =showAllMonthlyData() style="display: inline;" disabled>next</button>
+          </div>
+        </div>
+      </div>`
+    }else{
+        prevNextBtnContainer.innerHTML = `<div class="row">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+          <div class="content">
+              <button class="btn btn-sm bg-info" onclick =showAllMonthlyData(${result.data.prevPage})  style="display: inline;" >prev</button>
+              <button class="btn btn-sm bg-info" onclick =showAllMonthlyData(${result.data.nextPage}) style="display: inline;">next</button>
+          </div>
+        </div>
+      </div>`
+    }
+   
 }
 
 
