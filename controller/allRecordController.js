@@ -11,28 +11,30 @@ const RecordServices = require("../Services/recordServices");
 
 exports.getMonthlyRecord = async(req,res)=>{
     try{
-        const offset = (+req.query.page-1)*2
-        const creditCount = await expense.count({
-            where:{
-                userId:req.user.id
-            }
-        });
-        const expenseCount = await credit.count({
-            where:{
-                userId:req.user.id
-            }
-        })
-        const nOffset = offset*2
-        let totalItem = creditCount+expenseCount;
+        const windowHeight = +req.query.height;
+        let limitToShow;
+        let offsetC;
+        let offsetD;
+        if(windowHeight>=600){
+            offsetC = (+req.query.page-1)*6;
+            offsetD = (+req.query.page-1)*6;
+            limitToShow = 6
+        }else{
+            offsetC = (+req.query.page-1)*4;
+            offsetD = (+req.query.page-1)*4
+            limitToShow = 4
+        }
         const resultD = await req.user.getExpense_debits({
-            offset:offset,
-            limit:2
+            offset:offsetD,
+            limit:limitToShow
         })
 
         const resultC = await req.user.getExpense_credits({
-            offset:offset,
-            limit:2
+            offset:offsetC,
+            limit:limitToShow
         })
+        const creditLength = resultC.length;
+        const debitLength = resultD.length;
         const totalExpense = req.user.totalExpense
         const totalCredit = req.user.totalCredit
        res.status(200).json({
@@ -41,11 +43,13 @@ exports.getMonthlyRecord = async(req,res)=>{
         currentPage:req.query.page,
         nextPage:+req.query.page+1,
         prevPage:+req.query.page-1,
-        isNextPage:nOffset<totalItem,
-        isPrevPage:offset>0,
+        isNextPage:offsetC<(resultC.length-1) ||offsetD<(resultD.length-1),
+        isPrevPage:offsetC>0 || offsetD>0,
         isPremium:req.user.isPremium,
         totalExpense:totalExpense,
-        totalCredit:totalCredit
+        totalCredit:totalCredit,
+        creditLength:creditLength,
+        debitLength:debitLength
        })
 
     }catch(err){

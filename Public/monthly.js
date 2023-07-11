@@ -73,13 +73,15 @@ nextDate.addEventListener("click",function(e){
 })
 
 async function showAllMonthlyData(page){
+    const height = window.screen.height
+    // const height = 500
     page = page||1;
     monthlyTable.innerHTML = ""
     const token = localStorage.getItem("token");
-    const result = await axios.get(`http://localhost:3000/expensePage/allMonthlyExpense?page=${page}`,{headers:{"authorization":token}});
+    const result = await axios.get(`http://localhost:3000/expensePage/allMonthlyExpense?page=${page}&height=${height}`,{headers:{"authorization":token}});
     let i =0;
     let j = 0;
-    while(i<2 || j<2){
+    while(i<result.data.creditLength || j<result.data.debitLength){
         if(result.data.resultC[i]){
         if(month[result.data.resultC[i].createdMonth]==innerMonthContainer.innerText && result.data.resultC[i].createdYear ==innerYearContainerMonthlyHtml.innerText){
                 monthlyTable.innerHTML+= ` <tr style =background-color: #e3e1e1;">
@@ -196,3 +198,6 @@ try{
     document.write(err)
 }
 }
+
+
+console.log(window.screen.height)

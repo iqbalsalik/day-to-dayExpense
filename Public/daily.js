@@ -76,9 +76,13 @@ let dateName = date.getDate();
 let yearName = date.getFullYear();
 
 //ON DOM CONTENT LOADED
-window.addEventListener("DOMContentLoaded", showAllData(dateName,monthName,yearName,dayName))
-
-
+window.addEventListener("DOMContentLoaded",function(){
+    innerYearContainer.innerText = yearName
+    innerDateContainer.innerText = dateName;
+    innerDayContainer.innerText = day[dayName];
+    innerMonthYearContainer.innerText = month[monthName];
+    showAllData()
+})
 
 addToDo.addEventListener("click", addToDoPage);
 
@@ -87,8 +91,6 @@ function addToDoPage(e) {
     fillingArea.style.display = "block";
     addToDo.style.display = "none";
 }
-
-
 
 // DATE PREV BUTTON
 prevDate.addEventListener("click", async function () {
@@ -121,7 +123,7 @@ prevDate.addEventListener("click", async function () {
     innerDateContainer.innerText = dateName;
     innerDayContainer.innerText = day[dayName];
     innerMonthYearContainer.innerText = month[monthName];
-    showAllData(dateName,monthName,yearName,dayName)
+    showAllData()
 })
 
 //DATE NEXT BUTTON
@@ -155,7 +157,7 @@ nextDate.addEventListener("click", function () {
     innerDayContainer.innerText = day[dayName];
     innerMonthYearContainer.innerText = month[monthName]
 
-    showAllData(dateName,monthName,yearName,dayName)
+    showAllData()
 });
 
 credit.addEventListener("click", function () {
@@ -182,11 +184,11 @@ debit.addEventListener("click", function () {
 
 okButton.addEventListener("click", addDebitCredit)
 
-async function showAllData(dtNa,moNa,yeNa,daNa){
-    innerDateContainer.innerText = dtNa;
-    innerMonthYearContainer.innerText = month[moNa]
-    innerYearContainer.innerText = yeNa;
-    innerDayContainer.innerText = day[daNa]
+async function showAllData() {
+    // innerDateContainer.innerText = dtNa;
+    // innerMonthYearContainer.innerText = month[moNa]
+    // innerYearContainer.innerText = yeNa;
+    // innerDayContainer.innerText = day[daNa]
     const token = localStorage.getItem("token");
     const result = await axios.get("http://localhost:3000/expensePage/allExpense", { headers: { "authorization": token } });
     const result2 = await axios.get("http://localhost:3000/expense/allCredits", { headers: { "authorization": token } })
@@ -198,7 +200,7 @@ async function showAllData(dtNa,moNa,yeNa,daNa){
         incomeCreditContainer.style.display = "block";
         for (let i = 0; i < result2.data.length; i++) {
             totalCredit = totalCredit + +result2.data[i].amount
-            if(innerDateContainer.innerText == result2.data[i].createdDate && innerMonthYearContainer.innerText == month[result2.data[i].createdMonth] && innerYearContainer.innerText == result2.data[i].createdYear){
+            if (innerDateContainer.innerText == result2.data[i].createdDate && innerMonthYearContainer.innerText == month[result2.data[i].createdMonth] && innerYearContainer.innerText == result2.data[i].createdYear) {
                 if (i % 2 == 0) {
                     showOnGreenScreenC(result2.data[i].category, result2.data[i].amount, result2.data[i].id)
                 } else {
@@ -207,11 +209,13 @@ async function showAllData(dtNa,moNa,yeNa,daNa){
             }
             countCredit++;
         }
+    }else{
+        incomeCreditContainer.style.display = "none";
+        plusIncomeCredit.style.display = "block";
     }
     if(incomeCreditContainer.innerHTML == ""){
-        const childElement = `<div class="mt-1 mb-1 text-center" style="font-size: larger;" id="plusIncomeCredit">Tap on "+" to add new item
-        </div>`
-        incomeCreditContainer.removeChild(childElement)
+        plusIncomeCredit.style.display = "block";
+        incomeCreditContainer.style.display = "none";
     }
     amountCreditParaList.innerText = totalCredit;
     if (result.data.isPremium == true) {
@@ -225,7 +229,7 @@ async function showAllData(dtNa,moNa,yeNa,daNa){
         incomeDebitContainer.style.display = "block";
         for (let i = 0; i < result.data.result.length; i++) {
             totalDebit = totalDebit + +result.data.result[i].amount
-            if(innerDateContainer.innerText == result.data.result[i].createdDate && innerMonthYearContainer.innerText == month[result.data.result[i].createdMonth] && innerYearContainer.innerText == result.data.result[i].createdYear){
+            if (innerDateContainer.innerText == result.data.result[i].createdDate && innerMonthYearContainer.innerText == month[result.data.result[i].createdMonth] && innerYearContainer.innerText == result.data.result[i].createdYear) {
                 if (i % 2 == 0) {
                     showOnGreenScreen(result.data.result[i].category, result.data.result[i].amount, result.data.result[i].id)
                 } else {
@@ -236,17 +240,17 @@ async function showAllData(dtNa,moNa,yeNa,daNa){
         }
     }
     if(incomeDebitContainer.innerHTML ==''){
-        const childElement  = `<div class="mt-1 mb-1 text-center" style="font-size: larger;" id="plusIncomeDebit">Tap on "+" to add new item
-        </div>`
-        incomeDebitContainer.appendChild(childElement)
+        plusIncomeDebit.style.display = "block";
+        incomeDebitContainer.style.display = "none";
     }
     amountDebitParaList.innerText = totalDebit;
     totalAmount.innerText = amountCreditParaList.innerText - amountDebitParaList.innerText;
 
 }
 
-async function addDebitCredit(e){
+async function addDebitCredit(e) {
     try {
+        e.preventDefault()
         let totalAmountNumber = Number(totalAmount.innerText);
         let interedAmount = Number(expAmount.value);
         if (e.target.classList.contains("credit")) {
@@ -255,44 +259,44 @@ async function addDebitCredit(e){
                 category: expName.value,
                 amount: interedAmount,
                 description: expDescr.value,
-                createdDate:dateName,
-                createdMonth:monthName,
-                createdYear:yearName
+                createdDate: dateName,
+                createdMonth: monthName,
+                createdYear: yearName
             }, { headers: { "Authorization": token } })
             let finalAmount = totalAmountNumber + interedAmount;
             totalAmount.innerText = finalAmount;
             let creditedAmount = Number(amountCreditParaList.innerText);
             const totalCreditedAmount = creditedAmount + interedAmount;
             amountCreditParaList.innerText = totalCreditedAmount;
-            plusIncomeCredit.style.display = "none";
-            incomeCreditContainer.style.display = "block";
             if (countCredit % 2 == 0) {
                 showOnGreenScreenC(expName.value, expAmount.value, result.data.id)
             } else {
                 showOnWhiteScreenC(expName.value, expAmount.value, result.data.id);
             }
+            plusIncomeCredit.style.display = "none";
+            incomeCreditContainer.style.display = "block";
         } else {
             const token = localStorage.getItem("token");
             const result = await axios.post("http://localhost:3000/expense/debitAmount", {
                 category: expName.value,
                 amount: expAmount.value,
                 description: expDescr.value,
-                createdDate:dateName,
-                createdMonth:monthName,
-                createdYear:yearName
+                createdDate: dateName,
+                createdMonth: monthName,
+                createdYear: yearName
             }, { headers: { "authorization": token } })
             let finalAmount = totalAmountNumber - result.data.amount;
             totalAmount.innerText = finalAmount;
             let debitedAmount = Number(amountDebitParaList.innerText);
             const totalDebitedAmount = debitedAmount + +result.data.amount;
             amountDebitParaList.innerText = totalDebitedAmount;
-            plusIncomeDebit.style.display = "none";
-            incomeDebitContainer.style.display = "block";
             if (count % 2 == 0) {
                 showOnGreenScreen(expName.value, expAmount.value, result.data.id)
             } else {
                 showOnWhiteScreen(expName.value, expAmount.value, result.data.id);
             }
+            plusIncomeDebit.style.display = "none";
+            incomeDebitContainer.style.display = "block";
         }
         expAmount.value = '';
         expName.value = '';
@@ -342,7 +346,7 @@ async function deleteExpense(expId, expAmount) {
         totalAmount.innerText = Number(totalAmount.innerText) + Number(expAmount)
         let childNode = document.getElementById(expId);
         incomeDebitContainer.removeChild(childNode)
-        if(incomeDebitContainer.innerHTML == ""){
+        if (incomeDebitContainer.innerHTML == "") {
             plusIncomeDebit.style.display = "block"
         }
     } catch (err) {
@@ -359,7 +363,7 @@ async function deleteCredit(expId, expAmount) {
         totalAmount.innerText = Number(totalAmount.innerText) - Number(expAmount)
         let childNode = document.getElementById(expId);
         incomeCreditContainer.removeChild(childNode)
-        if(incomeCreditContainer.innerHTML == ""){
+        if (incomeCreditContainer.innerHTML == "") {
             plusIncomeCredit.style.display = "block"
         }
     } catch (err) {
@@ -403,31 +407,34 @@ rzpBtn.addEventListener("click", async function (e) {
 })
 
 function showLeaderboard() {
-    let inputElement = document.createElement("input");
-    inputElement.type = "button";
-    inputElement.value = "Show Leaderboard"
-    inputElement.innerText = "Show Leaderboard"
-    inputElement.classList.add("btn", "btn-outline-warning", "my-2", "my-sm-0");
-    prem.appendChild(inputElement);
+    // let inputElement = document.createElement("input");
+    // inputElement.type = "button";
+    // inputElement.value = "Show Leaderboard"
+    // inputElement.innerText = "Show Leaderboard"
+    // inputElement.classList.add("btn", "btn-outline-warning", "my-2", "my-sm-0");
+    const inputElement = `<button class="btn btn-outline-warning my-2 my-sm-0" onclick="showLeaderBoardList(event)" id="showLeaderBoardBtn">Show Leaderboard</button>`
+    prem.innerHTML =  inputElement;
     rzpBtn.style.display = "none";
     prem.style.display = "block";
-    inputElement.onclick = async function (e) {
-        e.preventDefault()
-        const token = localStorage.getItem("token");
-        const result = await axios.get("http://localhost:3000/premium/getLeaderboard", {
-            headers: { "Authorization": token }
-        });
-        leaderboardList.style.display = "block";
-        let leaderboardCount = 1
-        for (let i = 0; i < result.data.length; i++) {
-            tBody.innerHTML += `
-              <tr>
-                <td>${leaderboardCount}</td>
-                <td>${result.data[i].name}</td>
-                <td>${result.data[i].totalExpense}</td>
-              </tr>`
-            leaderboardCount++
-        }
-        inputElement.disabled = true;
+}
+
+async function showLeaderBoardList(e){
+    e.preventDefault()
+    const token = localStorage.getItem("token");
+    const result = await axios.get("http://localhost:3000/premium/getLeaderboard", {
+        headers: { "Authorization": token }
+    });
+    leaderboardList.style.display = "block";
+    let leaderboardCount = 1
+    for (let i = 0; i < result.data.length; i++) {
+        tBody.innerHTML += `
+          <tr>
+            <td>${leaderboardCount}</td>
+            <td>${result.data[i].name}</td>
+            <td>${result.data[i].totalExpense}</td>
+          </tr>`
+        leaderboardCount++
     }
+    const button = document.getElementById("showLeaderBoardBtn")
+    button.disabled = true;
 }
