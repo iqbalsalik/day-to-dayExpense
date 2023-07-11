@@ -73,8 +73,10 @@ nextDate.addEventListener("click",function(e){
 })
 
 async function showAllMonthlyData(page){
-    const height = window.screen.height
+    // const height = window.screen.height
     // const height = 500
+    const height = window.innerHeight;
+    console.log(height)
     page = page||1;
     monthlyTable.innerHTML = ""
     const token = localStorage.getItem("token");
@@ -198,6 +200,3 @@ try{
     document.write(err)
 }
 }
-
-
-console.log(window.screen.height)
