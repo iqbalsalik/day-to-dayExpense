@@ -1,6 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const helmet = require("helmet");
+const compression = require("compression");
+const morgan = require("morgan");
+
+const path = require("path");
+const fs = require("fs");
 
 const router = require("./routes/router");
 const expDebitRouter = require("./routes/expDebitRouter");
@@ -21,9 +27,19 @@ const ExpenseCredit = require("./models/expenseCredit");
 const Downloads = require("./models/downloads");
 const Notes = require("./models/notes");
 
+require('dotenv').config();
+
 const app = express();
 
+const accessLogStream = fs.createWriteStream(path.join(__dirname,"access.log"),{
+    flag:"a"
+})
+
+app.use(morgan(("combined"),{stream:accessLogStream}))
+app.use(helmet());
+app.use(compression());
 app.use(cors());
+
 app.use(bodyParser.json());
 app.use(express.static("public"))
 
@@ -54,8 +70,8 @@ User.hasMany(Notes)
 Notes.belongsTo(User)
 
 
-sequelize.sync().then(result=>{
-    app.listen(3000);
+sequelize.sync().then(()=>{
+    app.listen(process.env.PORT || 8000);
 }).catch(err=>{
     console.log(err)
 })
