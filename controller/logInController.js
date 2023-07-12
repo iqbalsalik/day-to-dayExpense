@@ -10,6 +10,9 @@ const path = require("path");
 const Users = require("../models/signupModel");
 const forgotPassword = require("../models/forgotPasswordReques");
 
+
+const RecordService = require("../Services/recordServices");
+
 function generateToken(id, name) {
     return jwt.sign({ userId: id, name: name }, process.env.SECRET_TOKEN_KEY);
 }
@@ -23,7 +26,7 @@ exports.postLogInUser = async (req, res) => {
     try {
         let emailId = req.body.emailId;
         let password = req.body.password;
-        let allUserEmail = await Users.findAll();
+        let allUserEmail = await RecordService.findAllUsers()
         let emailCheck = false;
         Array.from(allUserEmail).forEach(user => {
             if (user.emailId === emailId) {
@@ -47,12 +50,8 @@ exports.postLogInUser = async (req, res) => {
 
 exports.forgotPassword = async (req, res) => {
     try {
-        const email = req.body.email;
-        const user = await Users.findOne({
-            where: {
-                emailId: email
-            }
-        })
+        
+        const user = await RecordService.findUserByEmail(req);
         if (user) {
             const id = uuid.v4()
 
@@ -92,6 +91,7 @@ exports.forgotPassword = async (req, res) => {
         }
     } catch (err) {
         console.log(err)
+        res.status(500).json("Something Went Wrong!")
     }
 }
 

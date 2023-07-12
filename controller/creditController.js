@@ -1,10 +1,9 @@
-const creditModel = require("../models/expenseCredit")
-const User = require("../models/signupModel");
 const sequelize = require("../utils/dataBase");
+const RecordServices = require("../Services/recordServices");
 
 exports.getAllCredit = async(req,res)=>{
     try{
-       const result = await req.user.getExpense_credits();
+       const result = await RecordServices.getCredit(req)
        res.status(200).json(result)
     }catch(err){
         console.log(err);
@@ -15,23 +14,14 @@ exports.getAllCredit = async(req,res)=>{
 exports.addCredit = async(req,res)=>{
     let t;
     try {
-        console.log(req.body)
-        let result
+        const {amount} = req.body
          t = await sequelize.transaction();
-        let { category, amount, description,createdDate,createdMonth,createdYear } = req.body;
-        result = await req.user.createExpense_credit({
-            category: category,
-            amount: amount,
-            description: description,
-            createdDate:createdDate,
-            createdMonth:createdMonth,
-            createdYear:createdYear
-        });
+        const result = await RecordServices.createCredit(req,t)
         let totalCredit = req.user.totalCredit;
         const finalAmount = totalCredit+amount;
         await req.user.update({
             totalCredit: finalAmount
-        })
+        },{transaction:t})
         await t.commit();
         res.status(200).json(result)
     } catch (err) {
@@ -46,7 +36,7 @@ exports.deleteCredit = async (req, res) => {
     try {
         // console.log(req.user.totalCredit)
         t = await sequelize.transaction();
-        const item = await creditModel.findByPk(req.params.expId);
+        const item = await RecordServices.findCreditByParams(req);
         let amount = item.amount
         await item.destroy({transaction:t});
         let totalExpense = req.user.totalCredit - amount;

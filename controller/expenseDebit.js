@@ -2,15 +2,14 @@ const path = require("path");
 
 const sequelize = require("../utils/dataBase");
 
-const debitModule = require("../models/expenseDebit");
 
+const RecordServices = require("../Services/recordServices");
 exports.getExpensePage = (req, res) => {
     res.sendFile(path.join(__dirname, "..", "views", "daily.html"))
 }
 
 exports.getAllExpenseData = async (req, res) => {
-
-    let result = await req.user.getExpense_debits();
+    let result = await RecordServices.getExpense(req);
     if (req.user.isPremium == true) {
         res.status(200).json({ result, "isPremium": true })
     } else {
@@ -23,15 +22,7 @@ exports.addDebitAmount = async (req, res) => {
     let t;
     try {
         t = await sequelize.transaction();
-        let { category, amount, description,createdDate,createdMonth,createdYear } = req.body;
-        const result = await req.user.createExpense_debit({
-            category: category,
-            amount: amount,
-            description: description,
-            createdDate:createdDate,
-            createdMonth:createdMonth,
-            createdYear:createdYear
-        }, { transaction: t });
+        const result = await RecordServices.createDebit(req,t)
         let totalExpense = req.user.totalExpense;
         await req.user.update({
             totalExpense: totalExpense + Number(amount)
@@ -48,7 +39,7 @@ exports.deleteExpense = async (req, res) => {
     let t;
     try {
         t = await sequelize.transaction();
-        const item = await debitModule.findByPk(req.params.expId);
+        const item = await RecordServices.findDebitByParams(req)
         let amount = item.amount
         await item.destroy({transaction:t});
         let totalExpense = req.user.totalExpense

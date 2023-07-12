@@ -1,12 +1,3 @@
-const sequelize = require("../utils/dataBase");
-const expense = require("../models/expenseDebit");
-const credit = require("../models/expenseCredit");
-const User = require("../models/signupModel");
-const Downloads = require("../models/downloads");
-const Notes = require("../models/notes");
-const AWS = require("aws-sdk");
-require("dotenv").config();
-
 const RecordServices = require("../Services/recordServices");
 
 exports.getMonthlyRecord = async (req, res) => {
@@ -23,32 +14,16 @@ exports.getMonthlyRecord = async (req, res) => {
             offsetD = (+req.query.page - 1) * 2;
             limitToShow = 2
         }
-        const expenseCount = await expense.count({
-            where: {
-                userId: req.user.id
-            }
-        });
-        const creditCount = await credit.count({
-            where: {
-                userId: req.user.id
-            }
-        })
+        const expenseCount = await RecordServices.expenseCount(req);
+        const creditCount = await RecordServices.creditCount(req);
         const nOffset = offsetC + offsetD
-        let totalItem = creditCount + expenseCount;
-        const resultD = await req.user.getExpense_debits({
-            offset: offsetD,
-            limit: limitToShow
-        })
+        const resultD = await RecordServices.getExpenseWithOffset(offsetD,limitToShow,req);
 
-        const resultC = await req.user.getExpense_credits({
-            offset: offsetC,
-            limit: limitToShow
-        })
+        const resultC = await RecordServices.getCreditWithOffset(offsetC,limitToShow,req);
         const totalExpense = req.user.totalExpense
         const totalCredit = req.user.totalCredit
-        console.log(offsetC+ resultC.length, creditCount)
-        console.log(offsetD + resultD.length,expenseCount)
-        res.status(200).json({
+
+         res.status(200).json({
             resultD,
             resultC,
             currentPage: req.query.page,
@@ -61,7 +36,8 @@ exports.getMonthlyRecord = async (req, res) => {
             totalCredit: totalCredit,
             creditLength: resultC.length,
             debitLength: resultD.length
-        })
+         })
+        
 
     } catch (err) {
         console.log(err)
@@ -74,14 +50,11 @@ const date = new Date()
 
 exports.downloadMonthlyData = async (req, res) => {
     try {
-        const userData = await req.user.getExpense_debits();
+        const userData = await RecordServices.getExpense(req);
         const stringyfiedData = JSON.stringify(userData);
         const fileName = `ExpenseData/${req.user.id}/${new Date()}`
         const fileUrl = await RecordServices.uploadToAws(stringyfiedData, fileName)
-        await req.user.createDownload({
-            date: `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`,
-            fileUrl: fileUrl
-        })
+        await RecordServices.creatDownload(req,fileUrl);
         res.status(200).json({ fileUrl, response: "Success" })
 
     } catch (err) {
@@ -92,7 +65,7 @@ exports.downloadMonthlyData = async (req, res) => {
 
 exports.showPrevDownloads = async (req, res) => {
     try {
-        const records = await req.user.getDownloads()
+        const records = await RecordServices.getDownloads(req);
         res.status(200).json({ records })
 
     } catch (err) {
@@ -103,13 +76,7 @@ exports.showPrevDownloads = async (req, res) => {
 
 exports.addNotes = async (req, res) => {
     try {
-        const result = await req.user.createNote({
-            note: req.body.note,
-            date: req.body.date,
-            month: req.body.month,
-            year: req.body.year,
-            day: req.body.day
-        })
+        const result = await RecordServices.createNote(req)
         res.status(200).json(result)
     } catch (err) {
         console.log(err);
@@ -119,7 +86,7 @@ exports.addNotes = async (req, res) => {
 
 exports.getAllNotes = async (req, res) => {
     try {
-        const result = await req.user.getNotes();
+        const result = await RecordServices.getNotes(req);
         res.status(200).json(result)
     } catch (err) {
         res.status(500).json("Something Went Wrong!")
@@ -128,8 +95,7 @@ exports.getAllNotes = async (req, res) => {
 
 exports.deleteNote = async (req, res) => {
     try {
-        const id = req.params.id;
-        const note = await Notes.findByPk(id);
+        const note = await RecordServices.findNotes(req)
         await note.destroy();
         res.status(200).json("Successfully Deleted")
     } catch (err) {

@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 
 
 const Users = require("../models/signupModel");
+const RecordServices = require("../Services/recordServices");
 
 exports.getSignUpPage = (req, res) => {
     res.sendFile(path.join(__dirname, "..", "views", "signUp.html"))
@@ -12,7 +13,7 @@ exports.getSignUpPage = (req, res) => {
 exports.userSingUp = async (req, res) => {
     try{
         const password = req.body.password;
-        let allUserEmail = await Users.findAll();
+        let allUserEmail = await RecordServices.findAllUsers()
         let bool = false;
         Array.from(allUserEmail).forEach(user=>{
             if(user.emailId === req.body.emailId){
@@ -26,11 +27,7 @@ exports.userSingUp = async (req, res) => {
                 if(err){
                    return res.status(401).json("Something Went Wrong!")
                 }
-                await Users.create({
-                    name: req.body.name,
-                    emailId: req.body.emailId,
-                    password: hash
-                });
+                await RecordServices.createUser(req,hash)
                 return res.status(200).json("Successfully Singed UP!!")
             })
         } 
