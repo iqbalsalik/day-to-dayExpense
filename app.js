@@ -1,7 +1,8 @@
+require('dotenv').config();
+
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
 
@@ -27,7 +28,6 @@ const ExpenseCredit = require("./models/expenseCredit");
 const Downloads = require("./models/downloads");
 const Notes = require("./models/notes");
 
-require('dotenv').config();
 
 const app = express();
 
@@ -36,7 +36,6 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname,"access.log"),{
 })
 
 app.use(morgan(("combined"),{stream:accessLogStream}))
-app.use(helmet());
 app.use(compression());
 app.use(cors());
 
@@ -71,7 +70,7 @@ Notes.belongsTo(User)
 
 
 sequelize.sync().then(()=>{
-    app.listen(process.env.PORT || 8000);
+    app.listen(process.env.PORT);
 }).catch(err=>{
     console.log(err)
 })
