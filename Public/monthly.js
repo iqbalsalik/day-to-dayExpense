@@ -120,7 +120,7 @@ async function showAllMonthlyData(page){
 
     if(result.data.isPremium ==true){
      premMonth.innerHTML= `<button class="btn  mt-1 "
-     style=" height: 45px; border-radius: 25px; background-color:#ffc107 " onclick ="showPrevDownloads(event)">Show Downloads</button>`;
+     style=" height: 45px; border-radius: 25px; background-color:#ffc107" onclick ="showPrevDownloads(event)">Show Downloads</button>`;
      premMonth.style.display = "block"
      btnContainer.innerHTML = `<div class="col-12">
      <button class="btn  mt-5 float-right"
@@ -182,8 +182,8 @@ async function downloadMonthlyData (e){
 }
 
 async function showPrevDownloads(e){
+    try{
     e.preventDefault()
-try{
     downloadList.innerHTML = "";
     downloadListContainer.style.display = "block"
     const token = localStorage.getItem("token");

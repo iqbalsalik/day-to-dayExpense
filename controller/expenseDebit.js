@@ -22,6 +22,7 @@ exports.addDebitAmount = async (req, res) => {
     let t;
     try {
         t = await sequelize.transaction();
+    let {amount} = req.body;
         const result = await RecordServices.createDebit(req,t)
         let totalExpense = req.user.totalExpense;
         await req.user.update({
@@ -31,6 +32,7 @@ exports.addDebitAmount = async (req, res) => {
         res.status(200).json(result)
     } catch (err) {
         await t.rollback()
+        console.log(err)
         res.status(400).json("Something Went Wrong!!")
     }
 }

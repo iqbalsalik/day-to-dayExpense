@@ -27,6 +27,7 @@ exports.postLogInUser = async (req, res) => {
         let emailId = req.body.emailId;
         let password = req.body.password;
         let allUserEmail = await RecordService.findAllUsers()
+        console.log(allUserEmail)
         let emailCheck = false;
         Array.from(allUserEmail).forEach(user => {
             if (user.emailId === emailId) {
@@ -45,6 +46,7 @@ exports.postLogInUser = async (req, res) => {
         }
     } catch (err) {
         console.log(err)
+        res.status(500).json(err)
     }
 }
 
@@ -69,7 +71,6 @@ exports.forgotPassword = async (req, res) => {
                 }
             });
 
-
             const mailOptions = {
                 from: `Salik Iqbal <sisalik84@gmail.com>`,
                 to: req.body.email,
@@ -80,7 +81,7 @@ exports.forgotPassword = async (req, res) => {
 
             transporter.sendMail(mailOptions, async (error, info) => {
                 if (error) {
-                    console.log(error);
+                    console.log(error)
                     res.status(400).json('Error occurred while sending email.');
                 } else {
                     res.status(200).json({ message: 'Email sent successfully!', verification: true });
@@ -186,7 +187,6 @@ exports.updatePassword = async (req, res) => {
 
     try {
         const resetpasswordid = req.params.resetpasswordid;
-        console.log(req.body.password);
         const password = req.body.password;
         const resetpasswordrequest = await forgotPassword.findOne({ where: { id: resetpasswordid } })
         const user = await Users.findOne({ where: { id: resetpasswordrequest.userId } })

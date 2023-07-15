@@ -20,7 +20,8 @@ logIn.addEventListener("click", async function (e) {
         localStorage.setItem("token", result.data.token);
         window.location.href = "/expensePage";
     } catch (err) {
-        document.write(err.response.data)
+        console.log(err)
+        // document.write(err.response.data)
     }
 })
 
