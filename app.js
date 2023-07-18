@@ -50,6 +50,10 @@ app.use(navigationRouter);
 app.use(creditRouter);
 app.use(allRecordsRouter)
 
+app.use((req,res)=>{
+    res.sendFile(path.join(__dirname,"views",`${req.url}`))
+})
+
 User.hasMany(Expense);
 Expense.belongsTo(User);
 
@@ -70,7 +74,7 @@ Notes.belongsTo(User)
 
 
 sequelize.sync().then(()=>{
-    app.listen(process.env.PORT);
+    app.listen(3000);
 }).catch(err=>{
     console.log(err)
 })

@@ -21,7 +21,7 @@ logIn.addEventListener("click", async function (e) {
         window.location.href = "/expensePage";
     } catch (err) {
         console.log(err)
-        // document.write(err.response.data)
+        document.write(err.response.data)
     }
 })
 

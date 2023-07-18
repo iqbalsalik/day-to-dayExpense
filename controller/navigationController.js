@@ -4,6 +4,7 @@ exports.todoNavigation = (req,res)=>{
     res.sendFile(path.join(__dirname,"..","views","to-do.html"));
 };
 
+
 exports.dailyNavigation = (req,res)=>{
     res.sendFile(path.join(__dirname,"..","views","daily.html"));
 };

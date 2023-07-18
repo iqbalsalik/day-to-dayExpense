@@ -26,6 +26,7 @@ exports.userSingUp = async (req, res) => {
             bcrypt.hash(password,10,async(err, hash)=>{
                 if(err){
                    return res.status(401).json("Something Went Wrong!")
+                   
                 }
                 await RecordServices.createUser(req,hash)
                 return res.status(200).json("Successfully Singed UP!!")

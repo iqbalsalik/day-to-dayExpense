@@ -5,4 +5,5 @@ const sequelize = new Sequelize(process.env.SEQUELIZE_TABLE_NAME, process.env.SE
     host: process.env.SEQUELIZE_HOST
 });
 
+
 module.exports = sequelize;
