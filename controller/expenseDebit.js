@@ -52,6 +52,7 @@ exports.deleteExpense = async (req, res) => {
         res.status(200).json("Successfully Deleted!")
     } catch (err) {
         await t.rollback()
+        console.log(err)
         res.status(400).json("Something Went Wrong!")
     }
 }

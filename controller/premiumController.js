@@ -14,7 +14,7 @@ const User = require("../models/signupModel");
 //   })
 //   res.status(200).json(user)
 // }
-
+ 
 exports.getLeaderboard = async (req, res) => {
   const user = await User.findAll({
     attributes:["id","name","totalExpense"],

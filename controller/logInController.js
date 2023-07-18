@@ -17,7 +17,6 @@ function generateToken(id, name) {
     return jwt.sign({ userId: id, name: name }, process.env.SECRET_TOKEN_KEY);
 }
 
-
 exports.getLogInPage = (req, res) => {
     res.sendFile(path.join(__dirname, "..", "views", "login.html"))
 };

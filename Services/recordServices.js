@@ -143,6 +143,7 @@ exports.uploadToAws = async (data,name)=>{
             Bucket:BUCKET_NAME
         })
     
+        
         var params = {
             Bucket:BUCKET_NAME,
             Key:name,

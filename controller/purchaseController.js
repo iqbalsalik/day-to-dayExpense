@@ -25,8 +25,10 @@ try{
     })
 } catch(err){
     await t.rollback()
+    console.log(err)
     res.status(400).json("Something Went Wrong!!")
-}
+} 
+
 }
 
 exports.updateTransactionStatus = async (req,res)=>{
