@@ -37,8 +37,6 @@ exports.getMonthlyRecord = async (req, res) => {
             creditLength: resultC.length,
             debitLength: resultD.length
          })
-        
-
     } catch (err) {
         console.log(err)
         res.status(500).json("Something Went Wrong!")

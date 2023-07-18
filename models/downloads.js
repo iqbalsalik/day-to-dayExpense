@@ -3,6 +3,7 @@ const Sequelize = require("sequelize");
 const sequelize = require("../utils/dataBase");
 
 const downloads = sequelize.define("download",{
+    
     id:{
         type:Sequelize.INTEGER,
         allowNull:false,
