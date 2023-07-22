@@ -48,7 +48,7 @@ async function showyearlyData (page){
     page = page || 1
     dataTable.innerHTML = "";
     const token = localStorage.getItem("token");
-    const result = await axios.get(`http://localhost:3000/expensePage/allMonthlyExpense?page=${page}`,{headers:{"authorization":token}});
+    const result = await axios.get(`http://13.126.123.194:3000/expensePage/allMonthlyExpense?page=${page}`,{headers:{"authorization":token}});
     // if(result.data.isPremium ==true){
     //  rzpBtnYearly.style.display = "none";
     // }
@@ -135,7 +135,7 @@ try{
     downloadListYearly.innerHTML = "";
     downloadListContainerYearly.style.display = "block"
     const token = localStorage.getItem("token");
-    const result = await axios.get("http://localhost:3000/expensePage/showDownloads",{headers:{"authorization":token}});
+    const result = await axios.get("http://13.126.123.194:3000/expensePage/showDownloads",{headers:{"authorization":token}});
     for(let i =0;i<result.data.records.length;i++){
         downloadListYearly.innerHTML+= `<tr style =  background-color:#c9d970;;">
         <td scope="row">${i+1}</td>
@@ -153,7 +153,7 @@ async function downloadYearlyData (e){
     e.preventDefault()
   try{
       const token = localStorage.getItem("token");
-      const result =  await axios.get("http://localhost:3000/expensePage/download",{headers:{"authorization":token}});
+      const result =  await axios.get("http://13.126.123.194:3000/expensePage/download",{headers:{"authorization":token}});
       if(result.data.response=="Success"){
           const a = document.createElement("a");
           a.href = result.data.fileUrl;

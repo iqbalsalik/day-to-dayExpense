@@ -26,7 +26,6 @@ exports.postLogInUser = async (req, res) => {
         let emailId = req.body.emailId;
         let password = req.body.password;
         let allUserEmail = await RecordService.findAllUsers()
-        console.log(allUserEmail)
         let emailCheck = false;
         Array.from(allUserEmail).forEach(user => {
             if (user.emailId === emailId) {
@@ -51,7 +50,6 @@ exports.postLogInUser = async (req, res) => {
 
 exports.forgotPassword = async (req, res) => {
     try {
-        
         const user = await RecordService.findUserByEmail(req);
         if (user) {
             const id = uuid.v4()
@@ -66,7 +64,7 @@ exports.forgotPassword = async (req, res) => {
                 port: 587,
                 auth: {
                     user: process.env.SMTP_UNAME,
-                    pass: process.env.API_KEY
+                    pass:process.env.API_KEY
                 }
             });
 
@@ -75,7 +73,7 @@ exports.forgotPassword = async (req, res) => {
                 to: req.body.email,
                 subject: 'Forgot Password',
                 text: 'Link to reset Password!',
-                html: `<a href="http://localhost:3000/password/resetpassword/${id}">Reset password</a>`
+                html: `<a href="http://13.126.123.194:3000/password/resetpassword/${id}">Reset password</a>`
             };
 
             transporter.sendMail(mailOptions, async (error, info) => {
@@ -157,7 +155,7 @@ exports.verifyCode = async (req, res) => {
                                 }, 3000);
                             } else {
                                 const password = confirmPassword1.value;
-                                const result = await axios.post("http://localhost:3000/password/updatePassword/${req.params.id}",{password:password});
+                                const result = await axios.post("http://13.126.123.194:3000/password/updatePassword/${req.params.id}",{password:password});
                                 alert("Password Successfully Changed!")
                                 window.location.href = "/logIn";
                             }

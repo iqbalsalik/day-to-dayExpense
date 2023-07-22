@@ -190,8 +190,8 @@ async function showAllData() {
     // innerYearContainer.innerText = yeNa;
     // innerDayContainer.innerText = day[daNa]
     const token = localStorage.getItem("token");
-    const result = await axios.get("http://localhost:3000/expensePage/allExpense", { headers: { "authorization": token } });
-    const result2 = await axios.get("http://localhost:3000/expense/allCredits", { headers: { "authorization": token } })
+    const result = await axios.get("http://13.126.123.194:3000/expensePage/allExpense", { headers: { "authorization": token } });
+    const result2 = await axios.get("http://13.126.123.194:3000/expense/allCredits", { headers: { "authorization": token } })
     let totalCredit = 0;
     incomeCreditContainer.innerHTML = "";
     incomeDebitContainer.innerHTML = "";
@@ -255,7 +255,7 @@ async function addDebitCredit(e) {
         let interedAmount = Number(expAmount.value);
         if (e.target.classList.contains("credit")) {
             const token = localStorage.getItem("token");
-            const result = await axios.post("http://localhost:3000/expense/creditAmount", {
+            const result = await axios.post("http://13.126.123.194:3000/expense/creditAmount", {
                 category: expName.value,
                 amount: interedAmount,
                 description: expDescr.value,
@@ -277,7 +277,7 @@ async function addDebitCredit(e) {
             incomeCreditContainer.style.display = "block";
         } else {
             const token = localStorage.getItem("token");
-            const result = await axios.post("http://localhost:3000/expense/debitAmount", {
+            const result = await axios.post("http://13.126.123.194:3000/expense/debitAmount", {
                 category: expName.value,
                 amount: expAmount.value,
                 description: expDescr.value,
@@ -340,7 +340,7 @@ function showOnWhiteScreenC(expName, expAmount, expId) {
 async function deleteExpense(expId, expAmount) {
     try {
         const token = localStorage.getItem("token")
-        await axios.delete(`http://localhost:3000/expense/${expId}`, { headers: { "authorization": token } });
+        await axios.delete(`http://13.126.123.194:3000/expense/${expId}`, { headers: { "authorization": token } });
         let deletedDebitAmount = Number(amountDebitParaList.innerText) - Number(expAmount);
         amountDebitParaList.innerText = deletedDebitAmount;
         totalAmount.innerText = Number(totalAmount.innerText) + Number(expAmount)
@@ -357,7 +357,7 @@ async function deleteExpense(expId, expAmount) {
 async function deleteCredit(expId, expAmount) {
     try {
         const token = localStorage.getItem("token")
-        await axios.delete(`http://localhost:3000/credit/${expId}`, { headers: { "authorization": token } });
+        await axios.delete(`http://13.126.123.194:3000/credit/${expId}`, { headers: { "authorization": token } });
         let deletedCreditAmount = Number(amountCreditParaList.innerText) - Number(expAmount);
         amountCreditParaList.innerText = deletedCreditAmount;
         totalAmount.innerText = Number(totalAmount.innerText) - Number(expAmount)
@@ -375,29 +375,31 @@ async function deleteCredit(expId, expAmount) {
 rzpBtn.addEventListener("click", async function (e) {
     e.preventDefault()
     const token = localStorage.getItem("token");
-    const result = await axios.get("http://localhost:3000/premiummembership", { headers: { "authorization": token } });
+    const result = await axios.get("http://13.126.123.194:3000/premiummembership", { headers: { "authorization": token } });
 
     let option = {
         "key": result.data.key_id,
         "order_id": result.data.order.id,
         "handler": async function (result) {
-            await axios.post("http://localhost:3000/updateTransactionStatus", {
+          const r = await axios.post("http://13.126.123.194:3000/updateTransactionStatus", {
                 order_id: option.order_id,
                 payment_id: result.razorpay_payment_id
             }, {
                 headers: { "Authorization": token }
             });
+		
+		if(r.data.success == true){
+		    showLeaderboard()
+	        }
+
             alert("You are a Premium Member Now!")
-            rzpBtn.style.display = "none";
-            prem.style.display = "block"
         }
     }
     const rzp1 = new Razorpay(option);
     rzp1.open();
-    showLeaderboard()
 
     rzp1.on("payment.failed", async function (response) {
-        await axios.post("http://localhost:3000/updateFailureTransactionStatus", {
+        await axios.post("http://13.126.123.194:3000/updateFailureTransactionStatus", {
             order_id: option.order_id
         }, {
             headers: { "Authorization": token }
@@ -421,7 +423,7 @@ function showLeaderboard() {
 async function showLeaderBoardList(e){
     e.preventDefault()
     const token = localStorage.getItem("token");
-    const result = await axios.get("http://localhost:3000/premium/getLeaderboard", {
+    const result = await axios.get("http://13.126.123.194:3000/premium/getLeaderboard", {
         headers: { "Authorization": token }
     });
     leaderboardList.style.display = "block";

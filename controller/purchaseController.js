@@ -41,10 +41,10 @@ exports.updateTransactionStatus = async (req,res)=>{
     }})
     const result = await Promise.all([order.update({paymentId:payment_id,status:"SUCCESSFULL"},{transaction:t}),req.user.update({isPremium:true},{transaction:t})]);
     await t.commit()
-    res.status(200).json("Transaction Successfull!!")
+    res.status(200).json({message:"Transaction Successfull",success:true})
       }catch(err){
         await t.rollback();
-        console.log(err)
+        res.status(500).json({message:"Transaction Failed!",success:false})
       }
 }
 

@@ -16,7 +16,7 @@ submit.addEventListener("click", async function(e){
                 password:InputPassword.value
             }
         
-             const result = await axios.post("http://localhost:3000/user/signup",userDetails);
+             const result = await axios.post("http://13.126.123.194:3000/user/signup",userDetails);
              userName.value = '';
              InputEmail.value = '';
              InputPassword.value = '';

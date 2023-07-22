@@ -49,7 +49,7 @@ window.addEventListener("DOMContentLoaded",async function(){
     innerYearContainer.innerText = date.getFullYear();
     innerDayContainer.innerText = day[date.getDay()]
     const token = localStorage.getItem("token")
-    const result = await axios.get("http://localhost:3000/expensePage/allNotes",{headers:{"authorization":token}});
+    const result = await axios.get("http://13.126.123.194:3000/expensePage/allNotes",{headers:{"authorization":token}});
         for(let i =0;i<result.data.length;i++){
         showNotesOnScreen(result.data[i].note,result.data[i].date,result.data[i].month,result.data[i].year,result.data[i].day,result.data[i].id)
     }
@@ -144,7 +144,7 @@ ok.addEventListener("click",async function(e){
         const monthC = innerMonthYearContainer.innerText;
         const yearC = Number(innerYearContainer.innerText)
         const dayC = innerDayContainer.innerText
-        const result = await axios.post("http://localhost:3000/expensePage/addNotes",{
+        const result = await axios.post("http://13.126.123.194:3000/expensePage/addNotes",{
             note:expdes.value,
             date:dateC,
             month:monthC,
@@ -178,7 +178,7 @@ function showNotesOnScreen(data,date,month,year,day,id){
 async function deleteData(id){
     try{
         const token = localStorage.getItem("token")
-       const result =  await axios.delete(`http://localhost:3000/expensePage/deleteNote/${id}`,{headers:{"authorization":token}})
+       const result =  await axios.delete(`http://13.126.123.194:3000/expensePage/deleteNote/${id}`,{headers:{"authorization":token}})
        console.log(result);
        if(result.status == 200){
         console.log(id)

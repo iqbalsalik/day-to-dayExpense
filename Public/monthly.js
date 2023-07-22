@@ -80,12 +80,12 @@ async function showAllMonthlyData(page) {
     page = page || 1;
     monthlyTable.innerHTML = ""
     const token = localStorage.getItem("token");
-    const result = await axios.get(`http://localhost:3000/expensePage/allMonthlyExpense?page=${page}&height=${height}`, { headers: { "authorization": token } });
+    const result = await axios.get(`http://13.126.123.194:3000/expensePage/allMonthlyExpense?page=${page}&height=${height}`, { headers: { "authorization": token } });
     let i = 0;
     let j = 0;
     while (i < result.data.creditLength || j < result.data.debitLength) {
         if (result.data.resultC[i]) {
-            if (month[result.data.resultC[i].createdMonth] == innerMonthContainer.innerText && result.data.resultC[i].createdYear == innerYearContainerMonthlyHtml.innerText) {
+            if (monthMonthlyHtml[result.data.resultC[i].createdMonth] == innerMonthContainer.innerText && result.data.resultC[i].createdYear == innerYearContainerMonthlyHtml.innerText) {
                 monthlyTable.innerHTML += ` <tr style =background-color: #e3e1e1;">
                 <th scope="row">${result.data.resultC[i].createdDate}-${monthMonthlyHtml[result.data.resultC[i].createdMonth]}-${result.data.resultC[i].createdYear}</th>
                 <td>${result.data.resultC[i].description}</td>
@@ -96,7 +96,7 @@ async function showAllMonthlyData(page) {
             }
         }
         if (result.data.resultD[i]) {
-            if (month[result.data.resultD[i].createdMonth] == innerMonthContainer.innerText && result.data.resultD[i].createdYear == innerYearContainerMonthlyHtml.innerText) {
+            if (monthMonthlyHtml[result.data.resultD[i].createdMonth] == innerMonthContainer.innerText && result.data.resultD[i].createdYear == innerYearContainerMonthlyHtml.innerText) {
                 monthlyTable.innerHTML += ` <tr style = background-color:#d7ffd7;">
                 <th scope="row">${result.data.resultD[i].createdDate}-${monthMonthlyHtml[result.data.resultD[i].createdMonth]}-${result.data.resultD[i].createdYear}</th>
                 <td>${result.data.resultD[i].description}</td>
@@ -167,7 +167,7 @@ async function downloadMonthlyData(e) {
     e.preventDefault()
     try {
         const token = localStorage.getItem("token");
-        const result = await axios.get("http://localhost:3000/expensePage/download", { headers: { "authorization": token } });
+        const result = await axios.get("http://13.126.123.194:3000/expensePage/download", { headers: { "authorization": token } });
         if (result.data.response == "Success") {
             const a = document.createElement("a");
             a.href = result.data.fileUrl;
@@ -189,7 +189,7 @@ async function showPrevDownloads(e) {
         downloadList.innerHTML = "";
         downloadListContainer.style.display = "block"
         const token = localStorage.getItem("token");
-        const result = await axios.get("http://localhost:3000/expensePage/showDownloads", { headers: { "authorization": token } });
+        const result = await axios.get("http://13.126.123.194:3000/expensePage/showDownloads", { headers: { "authorization": token } });
         for (let i = 0; i < result.data.records.length; i++) {
             downloadList.innerHTML += `<tr style =  background-color:#c9d970;;">
         <td scope="row">${i + 1}</td>

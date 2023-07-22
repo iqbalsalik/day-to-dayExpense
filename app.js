@@ -40,7 +40,7 @@ app.use(compression());
 app.use(cors());
 
 app.use(bodyParser.json());
-app.use(express.static("public"))
+app.use(express.static("Public"))
 
 app.use(expDebitRouter);
 app.use(router);

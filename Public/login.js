@@ -16,7 +16,7 @@ logIn.addEventListener("click", async function (e) {
             emailId: email.value,
             password: password.value
         }
-        const result = await axios.post("http://localhost:3000/logIn", userDetails);
+        const result = await axios.post("http://13.126.123.194:3000/logIn", userDetails);
         localStorage.setItem("token", result.data.token);
         window.location.href = "/expensePage";
     } catch (err) {
@@ -39,7 +39,7 @@ forgotPasswordSubmit.addEventListener("click", async function (e) {
         if (!forgotPasswordEmail.value) {
             return document.write(`<h1>Email Field is Mandatory!!`)
         }
-        const result = await axios.post("http://localhost:3000/password/forgotpassword", { email: forgotPasswordEmail.value });
+        const result = await axios.post("http://13.126.123.194:3000/password/forgotpassword", { email: forgotPasswordEmail.value });
         console.log(result.data.verification)
         if (result.data.verification == true) {
             alert("Please click to the link sent to your email id to change the password")
@@ -50,7 +50,5 @@ forgotPasswordSubmit.addEventListener("click", async function (e) {
         document.write("Something Went Wrong!!")
     }
 })
-
-
 
 
