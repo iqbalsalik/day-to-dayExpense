@@ -35,6 +35,7 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname,"access.log"),{
     flag:"a"
 })
 
+console.log("cicdDeployment")
 app.use(morgan(("combined"),{stream:accessLogStream}))
 app.use(compression());
 app.use(cors());
@@ -49,6 +50,10 @@ app.use(premiumRouter);
 app.use(navigationRouter);
 app.use(creditRouter);
 app.use(allRecordsRouter)
+
+app.use((req,res)=>{
+    res.sendFile(path.join(__dirname,"views",`${req.url}`))
+})
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
