@@ -25,16 +25,18 @@ exports.postLogInUser = async (req, res) => {
     try {
         let emailId = req.body.emailId;
         let password = req.body.password;
+	    console.log(emailId,password)
         let allUserEmail = await RecordService.findAllUsers()
+	    console.log(allUserEmail)
         let emailCheck = false;
         Array.from(allUserEmail).forEach(user => {
             if (user.emailId === emailId) {
                 emailCheck = true;
                 bcrypt.compare(password, user.password, (err, isMatched) => {
                     if (isMatched) {
-                        res.status(200).json({ message: "succesfully LogedIn", token: generateToken(user.id, user.name) })
+                      return res.status(200).json({ message: "succesfully LogedIn", token: generateToken(user.id, user.name) })
                     } else {
-                        res.status(401).json("Wrong Password!")
+                       return res.status(401).json("Wrong Password!")
                     }
                 })
             }

@@ -18,6 +18,7 @@ logIn.addEventListener("click", async function (e) {
         }
         const result = await axios.post("http://13.126.123.194:3000/logIn", userDetails);
         localStorage.setItem("token", result.data.token);
+	    console.log(result)
         window.location.href = "/expensePage";
     } catch (err) {
         console.log(err)
